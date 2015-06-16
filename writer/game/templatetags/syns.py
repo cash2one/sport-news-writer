@@ -5,15 +5,18 @@ from random import sample
 
 register = template.Library()
 
-def syn(value):
+def syn(v):
+    values = v.split('; ')
     try:
-        args = Q(title=value)
-        word = Synonims.objects.filter(args).first()
-        word_list = word.syns.split(', ')
-        word_list.append(word.title)
-        return sample(word_list, 1)[0]
+        for value in values:
+            args = Q(title=value)
+            word = Synonims.objects.filter(args).first()
+            word_list = word.syns.split(', ')
+            word_list.append(word.title)
+            ret = sample(word_list, 1)[0]
     except:
-        return value
+        ret = sample(values, 1)[0]
+    return ret
 
 register.filter('syn', syn)
 
