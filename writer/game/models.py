@@ -98,13 +98,15 @@ class Team(models.Model):
             self.action = ch('a remizat; a obtinut un egal')
         return 'ok'
 
-    def gramar(self, case):
+    def gramar(self, case, plural=None):
         """
         This method give a sinonimical expression to the name of the team.
 
         :param case: the gramatical case (like nominative, genitive, etc.)
         :type case: char, n|g|a
         """
+        variants_s = []
+        variants_p = []
         variants = []
         if case == 'n':
             cei = 'cei de la'
@@ -114,7 +116,7 @@ class Team(models.Model):
             elevii = 'elevii'
             lider = 'liderul'
             loser = 'lanterna rosie'
-            variants.append(self.title)
+            variants_s.append(self.title)
         elif case == 'g':
             cei = 'celor de la'
             echipa = 'echipei'
@@ -124,7 +126,7 @@ class Team(models.Model):
             lider = 'liderului'
             loser = 'lanternei rosii a'
         elif case == 'a':
-            cei = 'celor de la'
+            cei = 'pe cei de la'
             echipa = 'echipei'
             gazde = 'gazdelor'
             oaspeti = 'oaspetilor'
@@ -132,26 +134,34 @@ class Team(models.Model):
             lider = 'liderului'
             loser = 'lanternei rosii a'
         if self.city:
-            variants +=[
+            variants_s +=[
                 echipa + ' din ' + self.city
             ]
-        variants += [
+        variants_s += [
             echipa + ' lui ' + self.couch,
+        ]
+        variants_p += [
             cei + ' ' + self.title,
             elevii + ' lui ' + self.couch
         ]
         if self.host:
-            variants.append(echipa + ' gazda')
-            variants.append(gazde)
+            variants_s.append(echipa + ' gazda')
+            variants_p.append(gazde)
         else:
-            variants.append(echipa + ' oaspete')
-            variants.append(oaspeti)
+            variants_s.append(echipa + ' oaspete')
+            variants_p.append(oaspeti)
         if self.lider:
-            variants.append(lider + ' clasamanetului')
-            variants.append(lider + ' campionatului')
+            variants_s.append(lider + ' clasamanetului')
+            variants_s.append(lider + ' campionatului')
         elif self.loser:
-            variants.append(loser + ' clasamentului')
-            variants.append(loser + ' campionatului')
+            variants_s.append(loser + ' clasamentului')
+            variants_s.append(loser + ' campionatului')
+        if plural is None:
+            variants = variants_s + variants_p
+        elif not plural:
+            variants = variants_s
+        else:
+            variants = variants_p
         return random.sample(variants, 1)[0]
 
     def n(self):
@@ -165,6 +175,18 @@ class Team(models.Model):
 
     def a(self):
         return self.gramar('a')
+
+    def ns(self):
+        return self.gramar('n', False)
+
+    def np(self):
+        return self.gramar('n', True)
+
+    def gs(self):
+        return self.gramar('g', False)
+
+    def gp(self):
+        return self.gramar('g', True)
 
     def wining_trend(self, last_id=None):
         """
