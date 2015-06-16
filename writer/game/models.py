@@ -500,7 +500,11 @@ class Game(models.Model):
         if self.id > first_id:
             for team in [self.team1, self.team2]:
                 if team.loc(self.id) > team.loc_prev(self.id):
-                    coborire.append([team, team.loc(self.id), team.points(self.id)])
+                    loc = team.loc(self.id)
+                    prev_game = Game.objects.filter(Q(campionat=self.campionat) & Q(id__lt=self.id)).last()
+                    supraclasat_id = prev_game.clasament()[loc - 1][1]
+                    supraclasat = Team.objects.get(id=supraclasat_id)
+                    coborire.append([team, loc, team.points(self.id), supraclasat, supraclasat.points(self.id), supraclasat.loc(self.id)])
             if len(coborire) > 0:
                 return coborire
         return False
@@ -705,6 +709,9 @@ class Game(models.Model):
             var['cob_team'] = coborire[0][0]
             var['cob_loc'] = coborire[0][1]
             var['cob_points'] = coborire[0][2]
+            var['supraclasat'] = coborire[0][3]
+            var['supraclasat_points'] = coborire[0][4]
+            var['supraclasat_loc'] = coborire[0][5]
         return tpl.render(Context(var))
 
     ###############
