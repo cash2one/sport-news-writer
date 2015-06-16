@@ -1,0 +1,2 @@
+proc=`ps -ax |grep '=8005' | sed 's/^ *//g' | cut -d ' ' -f1`
+kill $proc
