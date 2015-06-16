@@ -485,7 +485,11 @@ class Game(models.Model):
         if self.id > first_id:
             for team in [self.team1, self.team2]:
                 if team.loc(self.id) < team.loc_prev(self.id):
-                    urcare.append([team, team.loc(self.id), team.points(self.id)])
+                    loc = team.loc(self.id)
+                    prev_game = Game.objects.filter(Q(campionat=self.campionat) & Q(id__lt=self.id)).last()
+                    declasat_id = prev_game.clasament()[loc - 1][1]
+                    declasat = Team.objects.get(id=declasat_id)
+                    urcare.append([team, loc, team.points(self.id), declasat, declasat.points(self.id), declasat.loc(self.id)])
             if len(urcare) > 0:
                 return urcare
         return False
@@ -694,6 +698,9 @@ class Game(models.Model):
             var['urc_team'] = urcare[0][0]
             var['urc_loc'] = urcare[0][1]
             var['urc_points'] = urcare[0][2]
+            var['declasat'] = urcare[0][3]
+            var['declasat_points'] = urcare[0][4]
+            var['declasat_loc'] = urcare[0][5]
         if coborire:
             var['cob_team'] = coborire[0][0]
             var['cob_loc'] = coborire[0][1]
