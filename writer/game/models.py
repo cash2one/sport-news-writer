@@ -631,7 +631,7 @@ class Game(models.Model):
                 res |= TitleFrase.objects.filter(args).filter(not_null).all()
         tpl_string = random.sample(res, 1)[0].title
         tpl = Template(tpl_string)
-        return tpl.render(Context({'game': self,}))
+        return tpl.render(Context({'game': self, 'wins': self.winer().wining_trend(self.id), 'loses': self.loser().lose_trend(self.id)}))
 
     def first_goal_frase(self):
         args = Q()
