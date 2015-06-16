@@ -185,7 +185,7 @@ class Team(models.Model):
             if game.winer() == self:
                 wins += 1
             else:
-                wins = 0
+                break
         return wins
 
     def non_lose_trend(self, last_id=None):
@@ -221,7 +221,7 @@ class Team(models.Model):
             if game.loser() == self:
                 lose += 1
             else:
-                lose = 0
+                break
         return lose
 
     def points(self, last_id=None):
@@ -607,7 +607,10 @@ class Game(models.Model):
         goal_set = diff & total
         sets = [diff_set, total_set, goal_set]
 
+        wins = False
+        loses = False
         if self.winer():
+            wins = self.winer().wining_trend(self.id)
             if self.winer().wining_trend(self.id) >= 4:
                 print '__________________', "We have wining trend!!!"
                 win_set = Q(win_ser=True)
@@ -616,6 +619,7 @@ class Game(models.Model):
                 if self.winer().loc(self.id) == 1:
                     sets.append(Q(with_champion=True))
         if self.loser():
+            loses = self.loser().lose_trend(self.id)
             if self.loser().lose_trend(self.id) >= 3:
                 print '_________________', "we have losing trend :((((", self.loser().lose_trend(self.id)
                 lose_set = Q(lose_ser=True)
@@ -631,7 +635,7 @@ class Game(models.Model):
                 res |= TitleFrase.objects.filter(args).filter(not_null).all()
         tpl_string = random.sample(res, 1)[0].title
         tpl = Template(tpl_string)
-        return tpl.render(Context({'game': self, 'wins': self.winer().wining_trend(self.id), 'loses': self.loser().lose_trend(self.id)}))
+        return tpl.render(Context({'game': self, 'wins': wins, 'loses': loses}))
 
     def first_goal_frase(self):
         args = Q()
