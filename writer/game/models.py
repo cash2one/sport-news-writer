@@ -7,6 +7,7 @@ import random
 import datetime
 from django.template.base import add_to_builtins
 import ast
+import collections
 # Create your models here.
 
 
@@ -25,7 +26,7 @@ def list_authors(authors):
         goals += ', '.join(authors[author])
         if (i != 0) and (i != len(authors) - 1):
             ret += ', '
-        if (i != len(authors) - 1) or (len(authors == 1)):
+        if (i != len(authors) - 1) or (len(authors) == 1):
             ret += '%s (%s) ' % (author, goals)
         else:
             ret += 'si %s (%s) ' % (author, goals)
@@ -778,7 +779,7 @@ class Game(models.Model):
                 if i == len(self.goals_set()) - 1:
                     group = group[:-1]
                 if len(group) > 1:
-                    authors = {}
+                    authors = collections.OrderedDict()
                     for goal in group:
                         cg = authors.get(goal.author.name, [])
                         authors[goal.author.name] = cg + [str(goal.minute)]
