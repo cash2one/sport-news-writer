@@ -751,6 +751,7 @@ class Game(models.Model):
             team.save()
 
     def stop(self):
+        Synonims.objects.all().update(used=None)
         for team in [self.team1, self.team2]:
             team.host = False
             team.lider = False
@@ -889,6 +890,7 @@ admin.site.register(Conclusion)
 class Synonims(models.Model):
     title = models.CharField(max_length=128)
     syns = models.TextField()
+    used = models.TextField(blank=True, null=True)
     def __unicode__(self):
         return self.title
 admin.site.register(Synonims)

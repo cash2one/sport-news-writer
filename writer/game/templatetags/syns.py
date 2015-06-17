@@ -7,13 +7,38 @@ register = template.Library()
 
 def syn(v):
     values = v.split('; ')
+    general_word_list = []
+    unfiltered_word_list = []
+    def_list = []
     try:
         for value in values:
             args = Q(title=value)
             word = Synonims.objects.filter(args).first()
+            def_list.append(word)
             word_list = word.syns.split(', ')
+            unfiltered_word_list += word_list
+            exclude_list = []
+            if word.used:
+                exclude_list = word.used.split(', ')
             word_list.append(word.title)
-            ret = sample(word_list, 1)[0]
+            res_list = list(set(word_list) - set(exclude_list))
+            print 'for %s we have this variants: %s' % (value, ', '.join(res_list))
+            general_word_list += res_list
+        if not general_word_list:
+            print 'we have not free variants, so we need to reset exclude_list'
+            for word in def_list:
+                word.used = None
+                word.save()
+            general_word_list = unfiltered_word_list
+        ret = sample(general_word_list, 1)[0]
+        for word in def_list:
+            if not word.used:
+                print 'the word.used is empty, init it'
+                word.used = ret
+            else:
+                print 'the word.used is not empty, add %s to it' % ret
+                word.used = '%s, %s' % (word.used, ret)
+            word.save()
     except:
         ret = sample(values, 1)[0]
     return ret
