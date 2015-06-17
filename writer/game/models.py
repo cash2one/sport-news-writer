@@ -21,11 +21,11 @@ def ch(value):
 def list_authors(authors):
     ret = ''
     for i, author in enumerate(authors):
-        goals = 'minutele '
+        goals = 'min. '
         goals += ', '.join(authors[author])
         if (i != 0) and (i != len(authors) - 1):
             ret += ', '
-        if i != len(authors) - 1:
+        if (i != len(authors) - 1) or (len(authors == 1)):
             ret += '%s (%s) ' % (author, goals)
         else:
             ret += 'si %s (%s) ' % (author, goals)
@@ -221,7 +221,7 @@ class Team(models.Model):
             if game.loser() != self:
                 wins += 1
             else:
-                wins = 0
+                break
         return wins
 
     def partide(self, last_id=None):
