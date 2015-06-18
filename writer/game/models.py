@@ -91,7 +91,9 @@ class Team(models.Model):
 
     def etape(self, last_id):
         """How many games was this team played until game with the last_id id"""
-        count = Game.objects.filter((Q(team1=self) | Q(team2=self)) & Q(id__lte=last_id)).count()
+        season = Game.objects.get(id=last_id).season
+        count = Game.objects.filter(season=season).filter(
+            (Q(team1=self) | Q(team2=self)) & Q(id__lte=last_id)).count()
         return count
 
     def act(self, last_id):
@@ -238,12 +240,7 @@ class Team(models.Model):
         return wins
 
     def partide(self, last_id=None):
-        args = Q(team1=self)
-        args |= Q(team2=self)
-        if not last_id:
-            last_id = Game.objects.last().id
-        args &= Q(id__lte=last_id)
-        return Game.objects.filter(args).count()
+        return self.etape(last_id)
 
     def lose_trend(self, last_id=None):
         args = Q(team1=self)
@@ -264,6 +261,9 @@ class Team(models.Model):
         args |= Q(team2=self)
         if not last_id:
             last_id = Game.objects.last().id
+        ref_game = Game.objects.get(id=last_id)
+        season = ref_game.season
+        args &= Q(season=season)
         args &= Q(id__lte=last_id)
         points = 0
         for game in Game.objects.filter(args).order_by('id'):
