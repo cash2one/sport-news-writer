@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.template import Context
 from django.template import Template
 import random
-import datetime
 from django.template.base import add_to_builtins
 import ast
 import collections
@@ -13,6 +12,7 @@ import collections
 
 def mk_sent(what, verb, when, who, how):
     return "%s %s %s %s %s" % (what, verb, when, who, how)
+
 
 def ch(value):
     words_list = value.split(';')
@@ -32,6 +32,9 @@ def list_authors(authors):
             ret += 'si %s (%s) ' % (author, goals)
     return ret
 
+def get_season():
+    return Season.objects.last().id
+
 
 class Photo(models.Model):
     title = models.CharField(max_length=1024)
@@ -41,6 +44,15 @@ class Photo(models.Model):
         return self.title
 
 admin.site.register(Photo)
+
+
+class Season(models.Model):
+    title = models.CharField(max_length=64)
+
+    def __unicode__(self):
+        return self.title
+
+admin.site.register(Season)
 
 
 class Campionat(models.Model):
@@ -462,6 +474,7 @@ class Game(models.Model):
     goals = models.ManyToManyField(Goal, blank=True, null=True)
     url = models.CharField(max_length=512, blank=True, null=True)
     classament = models.TextField(blank=True, null=True)
+    season = models.ForeignKey(Season, default=get_season)
 
     def __unicode__(self):
         return self.team1.title + ' ' + str(self.goal_team1) + ':' + str(self.goal_team2) + ' ' + self.team2.title
