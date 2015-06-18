@@ -878,6 +878,28 @@ class RegularGoalFraseAdmin(admin.ModelAdmin):
     list_display = ('title', 'equal', 'reverse', 'only', 'duble', 'triple')
 admin.site.register(RegularGoalFrase, RegularGoalFraseAdmin)
 
+
+class GoalGroupFrase(models.Model):
+    """
+    It's a model for groups of goals (the cases when the same team mark more then 1 goal consecutivly.
+    """
+    #: the template for frase
+    title = models.TextField()
+    #: is this group the first group in game?
+    first = models.BooleanField(default=False)
+    #: have someone from the authors mark 2 goals in this game?
+    duble = models.BooleanField(default=False)
+    #: have someone from the authors mark 3 goals in this game?
+    triple = models.BooleanField(default=False)
+    #: have someone from the authors mark more then 3 goals in this game?
+    more = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.title
+
+admin.site.register(GoalGroupFrase)
+
+
 class LastGoalFrase(models.Model):
     title = models.TextField(blank=True, null=True)
     equal = models.BooleanField(default=False)
