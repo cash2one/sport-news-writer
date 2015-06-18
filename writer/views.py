@@ -1,4 +1,5 @@
 from game.models import *
+from django.db.models import Q
 from re import split, sub
 import urllib2
 from BeautifulSoup import BeautifulSoup as Soup
@@ -17,7 +18,14 @@ def collect(campionat):
     for row in row_list:
         if 'row-tall' in row['class']:
             try:
-                print select(row, '.tright')[0].text
+                date_string = select(row, '.tright')[0].text.strip()
+                print date_string
+                if len(date_string.split(' ')) == 2:
+                    date_string += ', 2015'
+                print date_string
+                pub_date = datetime.datetime.strptime(date_string, '%B %d, %Y')
+                print pub_date
+                Game.objects.filter(Q(campionat=campionat) & Q(pub_date__isnull=True)).update(pub_date=pub_date)
             except:
                 pass
         elif 'row-gray' in row['class']:
@@ -43,7 +51,7 @@ def collect(campionat):
                         score = select(row, '.sco')[0].text
                         goal_team1 = split(' - ', score)[0]
                         goal_team2 = split(' - ', score)[1]
-                        game = Game(campionat=campionat, team1 = home_team, team2 = away_team, goal_team1 = goal_team1, goal_team2 = goal_team2, pub_date=datetime.date.today(), url=score_link)
+                        game = Game(campionat=campionat, team1 = home_team, team2 = away_team, goal_team1 = goal_team1, goal_team2 = goal_team2, pub_date=None, url=score_link)
                         game.save()
                         try:
                             score_link = 'http://www.livescore.com' + select(row, '.sco a')[0]['href']

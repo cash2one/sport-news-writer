@@ -458,7 +458,7 @@ class Game(models.Model):
     team2 = models.ForeignKey(Team, related_name='game_team2')
     goal_team1 = models.IntegerField(default=0)
     goal_team2 = models.IntegerField(default=0)
-    pub_date = models.DateField(default=datetime.datetime.today())
+    pub_date = models.DateField(blank=True, null=True)
     goals = models.ManyToManyField(Goal, blank=True, null=True)
     url = models.CharField(max_length=512, blank=True, null=True)
     classament = models.TextField(blank=True, null=True)
