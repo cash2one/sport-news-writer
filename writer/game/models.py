@@ -33,6 +33,12 @@ def list_authors(authors):
     return ret
 
 def get_season():
+    """
+    It's a helper function for getting the current season. Is used, for example, in creation of game item.
+
+    :returns: the id of current season
+    :rtype: int
+    """
     return Season.objects.last().id
 
 
@@ -47,6 +53,10 @@ admin.site.register(Photo)
 
 
 class Season(models.Model):
+    """
+    The model for season. For calculating corrent the current points and the top of teams, we need to work only with the games in current season.
+    """
+    #: The title of season
     title = models.CharField(max_length=64)
 
     def __unicode__(self):
@@ -56,7 +66,12 @@ admin.site.register(Season)
 
 
 class Campionat(models.Model):
+    """
+    It's a model for league. Used for calculating top, points and so on.
+    """
+    #: the name of league
     title = models.CharField(max_length=128)
+    #: the url on livescore for collecting games
     url = models.CharField(max_length=1024)
 
     def __unicode__(self):
@@ -65,9 +80,16 @@ admin.site.register(Campionat)
 
 
 class Player(models.Model):
+    """
+    The model for player.
+    """
+    #: The name of player
     name = models.CharField(max_length=128)
+    #: The number of goals, marked in this season
     goals_in_season = models.IntegerField(default=0)
+    #: The total number of goals marked
     goals_total = models.IntegerField(default=0)
+    #: The nationality of player (will be used in making sinonims of his name
     nationality = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
@@ -76,21 +98,32 @@ admin.site.register(Player)
 
 
 class Team(models.Model):
+    """
+    The model for team
+    """
+    #: The name of team, as it's appear in livescore
     title = models.CharField(max_length=128)
+    #: The home city of team (is used in sinonim name forming)
     city = models.CharField(max_length=128, blank=True, null=True)
+    #: The name of couch (used in sinonim name forming)
     couch = models.CharField(max_length=128, blank=True, null=True)
+    #: The temporary value. If true - the team is host of given name. Is nulled after finish writing news.
     host = models.NullBooleanField(blank=True, null=True)
+    #: Temporary value. If true - the team is on first place in league. Is nulled after finish writing news.
     lider = models.NullBooleanField(blank=True, null=True)
+    #: Temporary value. If true - the team is on last place in league. Nulled after writing news.
     loser = models.NullBooleanField(blank=True, null=True)
     action = models.CharField(max_length=128, blank=True, null=True)
+    #: The league where the team play
     campionat = models.ForeignKey(Campionat)
+    #: A list of fotos of team
     photo = models.ManyToManyField(Photo)
 
     def __unicode__(self):
         return self.title
 
     def etape(self, last_id):
-        """How many games was this team played until game with the last_id id"""
+        """How many games was this team played until game with the last_id id in season"""
         season = Game.objects.get(id=last_id).season
         count = Game.objects.filter(season=season).filter(
             (Q(team1=self) | Q(team2=self)) & Q(id__lte=last_id)).count()
@@ -665,7 +698,6 @@ class Game(models.Model):
         if self.loser():
             loses = self.loser().lose_trend(self.id)
             if self.loser().lose_trend(self.id) >= 3:
-                print '_________________', "we have losing trend :((((", self.loser().lose_trend(self.id)
                 lose_set = Q(lose_ser=True)
                 sets = [lose_set]
             if self.id > first_id + 39:
