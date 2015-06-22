@@ -724,9 +724,12 @@ class Game(models.Model):
 
     def regular_goal_frase(self, goal):
         args = Q()
-        args &= Q(only=goal.only())
+        if goal.only() and goal.equal():
+            args &= Q(only=goal.only())
+        else:
+            args &= Q(only=goal.only())
+            args &= Q(equal=goal.equal())
         args &= Q(reverse=goal.reverse())
-        args &= Q(equal=goal.equal())
         args &= Q(duble=False)
         args &= Q(triple=False)
         tpl = Template(random.sample(RegularGoalFrase.objects.filter(args).all(), 1)[0].title)
@@ -834,10 +837,7 @@ class Game(models.Model):
                     else:
                         reg_goals += ' %s a ripostat prin reusitele lui %s.' % (group[0].team.n(), goals)
                 elif len(group) == 1:
-                    try:
-                        reg_goals += ' %s' % self.regular_goal_frase(group[0])
-                    except:
-                        pass
+                    reg_goals += ' %s' % self.regular_goal_frase(group[0])
         last_goal_frase = ''
         if self.goals.count() > 1:
             last_goal_frase = self.last_goal_frase()
