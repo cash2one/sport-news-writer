@@ -479,7 +479,7 @@ class Goal(models.Model):
         if (order > 0) and (prev_goal_diff < 15) and (prev_goal_diff > 1):
             v += [
                 '%d minute mai tirziu' % (m - self.game_set.first().goals.all()[order - 1].minute),
-                'dupa %d minute' % (m - self.game_set.first().goals.all()[order - 1].minute),
+                'dupa inca %d minute' % (m - self.game_set.first().goals.all()[order - 1].minute),
             ]
         elif prev_goal_diff and (prev_goal_diff < 2):
             v += [
@@ -508,6 +508,8 @@ class Game(models.Model):
     url = models.CharField(max_length=512, blank=True, null=True)
     classament = models.TextField(blank=True, null=True)
     season = models.ForeignKey(Season, default=get_season)
+    images = models.ManyToManyField(Photo, blank=True)
+    video = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return self.team1.title + ' ' + str(self.goal_team1) + ':' + str(self.goal_team2) + ' ' + self.team2.title

@@ -1,11 +1,20 @@
-from game.models import *
+from game.models import Game, Goal, Team, Campionat, Player, Photo
 from django.db.models import Q
 from re import split, sub
 import urllib2
 from BeautifulSoup import BeautifulSoup as Soup
 from soupselect import select
 import datetime
-# import time
+from apiclient.discovery import build
+from unidecode import unidecode
+from urlparse import urlparse
+import urllib
+from django.core.files import File
+
+
+DEVELOPER_KEY = "AIzaSyB0KMU3GZcwr5D-UqN46ZhlnjQLyNQwi20"
+YOUTUBE_API_SERVICE_NAME = "youtube"
+YOUTUBE_API_VERSION = "v3"
 
 
 def collect(campionat):
@@ -66,7 +75,7 @@ def collect(campionat):
                             for score_row in score_row_list:
                                 try:
                                     goal_bool = select(score_row, 'span.goal')[0]
-                                    print score_row
+                                    print goal_bool, score_row
                                     minute = int(split("'", select(score_row, 'div.min')[0].text)[0])
                                     print minute
                                     if select(score_row, 'span.name')[0].text != '':
@@ -99,7 +108,7 @@ def collect(campionat):
                                         else:
                                             assist = Player.objects.get(name=assist)
                                         print 'Assist: ', assist
-                                    goal = Goal(author = player, minute=minute, team=team, penalty=penalty, auto=auto, assist=assist)
+                                    goal = Goal(author = player, minute=minute, team=team, penalty=penalty, auto=auto, assist=assist, recipient=recipient)
                                     goal.save()
                                     player.goals_in_season += 1
                                     player.goals_total += 1
@@ -114,72 +123,58 @@ def collect(campionat):
                 pass
     return 'ok'
 
+
 def collect_all():
     for campionat in Campionat.objects.all():
         collect(campionat)
     return 'ok'
 
-def structure():
-    for i in range(0, 3):
-        TitleFrase(win_ser=True).save()
-        TitleFrase(stop_win_ser=True).save()
-        TitleFrase(lose_ser=True).save()
-        TitleFrase(stop_lose_ser=True).save()
-        TitleFrase(nonlose_ser=True).save()
-        TitleFrase(stop_nonlose_ser=True).save()
-    for i in range(0, 5):
-        TitleFrase(min_total_goals=0, max_total_goals=0).save()
-        TitleFrase(min_total_goals=1, max_total_goals=1).save()
-        TitleFrase(min_total_goals=2, max_total_goals=6).save()
-        TitleFrase(min_total_goals=7, max_total_goals=20).save()
-    for i in range(0, 5):
-        TitleFrase(min_score_diference=0, max_score_diference=0).save()
-        TitleFrase(min_score_diference=1, max_score_diference=1).save()
-        TitleFrase(min_score_diference=2, max_score_diference=3).save()
-        TitleFrase(min_score_diference=4, max_score_diference=20).save()
-    for i in range(0, 5):
-        TitleFrase(min_total_goals=2, max_total_goals=4, min_score_diference=1, max_score_diference=2).save()
-        TitleFrase(min_total_goals=2, max_total_goals=4, min_score_diference=2, max_score_diference=4).save()
-        TitleFrase(min_total_goals=4, max_total_goals=6, min_score_diference=1, max_score_diference=1).save()
-        TitleFrase(min_total_goals=4, max_total_goals=6, min_score_diference=3, max_score_diference=6).save()
-        TitleFrase(min_total_goals=7, max_total_goals=20, min_score_diference=1, max_score_diference=2).save()
-        TitleFrase(min_total_goals=7, max_total_goals=20, min_score_diference=3, max_score_diference=20).save()
-    for i in range(0, 5):
-        TitleFrase(min_score_diference=0, max_score_diference=0, last_goal_final=True).save()
-        TitleFrase(min_score_diference=1, max_score_diference=1, last_goal_final=True).save()
-    for i in range(0, 5):
-        TitleFrase(triple=True).save()
-        TitleFrase(duble=True).save()
-        TitleFrase(urcare=True).save()
-        TitleFrase(coborire=True).save()
 
-    for i in range(0, 5):
-        FirstGoalFrase(min_minute=0, max_minute=15, only=True).save()
-        FirstGoalFrase(min_minute=0, max_minute=15, only=False).save()
-        FirstGoalFrase(min_minute=16, max_minute=30, only=True).save()
-        FirstGoalFrase(min_minute=16, max_minute=30, only=False).save()
-        FirstGoalFrase(min_minute=31, max_minute=45, only=True).save()
-        FirstGoalFrase(min_minute=31, max_minute=45, only=False).save()
-        FirstGoalFrase(min_minute=45, max_minute=60, only=True).save()
-        FirstGoalFrase(min_minute=45, max_minute=60, only=False).save()
-        FirstGoalFrase(min_minute=61, max_minute=75, only=True).save()
-        FirstGoalFrase(min_minute=61, max_minute=75, only=False).save()
-        FirstGoalFrase(min_minute=76, max_minute=100, only=True).save()
-        FirstGoalFrase(min_minute=76, max_minute=100, only=False).save()
+def collect_video_game(game):
+    delta = datetime.timedelta(120)
+    begin_date = game.pub_date.isoformat() + 'T00:00:00Z'
+    end_date = game.pub_date + delta
+    end_date = end_date.isoformat() + 'T00:00:00Z'
+    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
-    for i in range(0, 5):
-        RegularGoalFrase(equal=True).save()
-        RegularGoalFrase(reverse=True).save()
-        RegularGoalFrase(only=True).save()
-        RegularGoalFrase(duble=True).save()
-        RegularGoalFrase(triple=True).save()
+    # Call the search.list method to retrieve results matching the specified
+    # query term.
+    q = 'Highlights %s %s' % (game.team1.title, game.team2.title)
+    search_response = youtube.search().list(
+        q=q,
+        # channelId="UCTv-XvfzLX3i4IGWAm4sbmA",
+        part="id,snippet",
+        type="video",
+        maxResults=50,
+        order="date",
+        publishedAfter=begin_date,
+        publishedBefore=end_date
+    ).execute()
 
-    for i in range(0, 5):
-        LastGoalFrase(equal=True).save()
-        LastGoalFrase(reverse=True).save()
-        LastGoalFrase(only=True).save()
-        LastGoalFrase(victory=True).save()
-        LastGoalFrase(victory=True, reverse=True).save()
-        LastGoalFrase(only=True, equal=True).save()
+    # Add each result to the appropriate list, and then display the lists of
+    # matching videos, channels, and playlists.
+    for search_result in search_response.get("items", []):
+        title = unidecode(search_result['snippet']['title'])
+        match = True
+        for word in q.split(' '):
+            if not word in title:
+                match = False
+        if match:
+            videoId = search_result['id']['videoId']
+            video_response = youtube.videos().list(
+                part='id,snippet,player',
+                id=videoId
+            ).execute()
+            video = video_response.get("items", [])[0]
+            thumbs = video['snippet']['thumbnails']
+            image_url = thumbs['high']['url']
+            photo = Photo(title=title)
+            name = urlparse(image_url).path.split('/')[-1]
+            content = urllib.urlretrieve(image_url)
+            photo.image.save(name, File(open(content[0])), save=True)
+            player = video['player']['embedHtml']
+            game.images.add(photo)
+            game.video = player
+            game.save()
+            break
     return 'ok'
-
