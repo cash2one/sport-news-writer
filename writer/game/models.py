@@ -519,6 +519,7 @@ class Game(models.Model):
     season = models.ForeignKey(Season, default=get_season)
     images = models.ManyToManyField(Photo, blank=True)
     video = models.TextField(blank=True, null=True)
+    live = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
         return self.team1.title + ' ' + str(self.goal_team1) + ':' + str(self.goal_team2) + ' ' + self.team2.title
@@ -860,10 +861,10 @@ class Game(models.Model):
                     <p>%s</p>
                     <p><b>%s</b></p>
                     """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
-        news = News(title=title, text=news_text, photo=self.images.first(), pub_date = self.pub_date)
-        news.save()
+        # news = News(title=title, text=news_text, photo=self.images.first(), pub_date = self.pub_date)
+        # news.save()
         self.stop()
-        return news
+        return title, news_text
 
 admin.site.register(Game)
 
