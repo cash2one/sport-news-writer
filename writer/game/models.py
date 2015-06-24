@@ -328,6 +328,14 @@ class Team(models.Model):
         return None
 
     def vecini(self, last_id=None):
+        """
+        Returns the team upper and the team lower in the top.
+
+        :param last_id: the id of current game
+        :type last_id: int
+        :returns: a tuple with the team upper and lower then current team
+        :rtype: tuple
+        """
         if not last_id:
             last_id = Game.objects.last().id
         game = Game.objects.get(id=last_id)
@@ -335,14 +343,15 @@ class Team(models.Model):
         loc = self.loc()
         if loc > 1:
             upper = clasament[loc - 2]
+            upper = Team.objects.get(id=upper)
         else:
             upper = None
         if loc != len(clasament):
             lower = clasament[loc + 1]
+            lower = Team.objects.get(id=lower)
         else:
             lower = None
         return upper, lower
-
 
 admin.site.register(Team)
 
@@ -849,6 +858,7 @@ class Game(models.Model):
 
 admin.site.register(Game)
 
+
 class TitleFrase(models.Model):
     title = models.TextField(blank=True, null=True)
     min_score_diference = models.IntegerField(blank=True, null=True)
@@ -875,10 +885,12 @@ class TitleFrase(models.Model):
         ret += '. Score diff: ' + str(self.min_score_diference) + ' - ' + str(self.max_score_diference) + '. Total: ' + str(self.min_total_goals) + ' - ' + str(self.max_total_goals)
         return ret
 
+
 class TitleFraseAdmin(admin.ModelAdmin):
     list_display = ('title', 'min_score_diference', 'max_score_diference', 'min_total_goals', 'max_total_goals',
                     'last_goal_final', 'triple', 'duble', 'urcare', 'coborire', 'win_ser', 'stop_win_ser', 'lose_ser', 'stop_lose_ser',
                     'nonlose_ser', 'stop_nonlose_ser')
+
 admin.site.register(TitleFrase, TitleFraseAdmin)
 
 class FirstGoalFrase(models.Model):
@@ -886,15 +898,20 @@ class FirstGoalFrase(models.Model):
     min_minute = models.IntegerField(blank=True, null=True)
     max_minute = models.IntegerField(blank=True, null=True)
     only = models.BooleanField(default=False)
+
     def __unicode__(self):
         ret = ''
         if self.title:
             ret += self.title + '. '
         ret += str(self.min_minute) + ' - ' + str(self.max_minute)
         return ret
+
+
 class FirstGoalFraseAdmin(admin.ModelAdmin):
     list_display = ('title', 'min_minute', 'max_minute', 'only')
+
 admin.site.register(FirstGoalFrase, FirstGoalFraseAdmin)
+
 
 class RegularGoalFrase(models.Model):
     title = models.TextField(blank=True, null=True)
@@ -903,13 +920,17 @@ class RegularGoalFrase(models.Model):
     only = models.BooleanField(default=False)
     duble = models.BooleanField(default=False)
     triple = models.BooleanField(default=False)
+
     def __unicode__(self):
         if self.title:
             return self.title
         else:
             return ''
+
+
 class RegularGoalFraseAdmin(admin.ModelAdmin):
     list_display = ('title', 'equal', 'reverse', 'only', 'duble', 'triple')
+
 admin.site.register(RegularGoalFrase, RegularGoalFraseAdmin)
 
 
@@ -940,6 +961,7 @@ class LastGoalFrase(models.Model):
     reverse = models.BooleanField(default=False)
     only = models.BooleanField(default=False)
     victory = models.BooleanField(default=False)
+
     def __unicode__(self):
         ret = ''
         if self.title:
@@ -947,15 +969,31 @@ class LastGoalFrase(models.Model):
         else:
             ret = 'None'
         return ret
+
 admin.site.register(LastGoalFrase)
 
 class Conclusion(models.Model):
     title = models.TextField(blank=True, null=True)
     urcare = models.BooleanField(default=False)
     coborire = models.BooleanField(default=False)
+
     def __unicode__(self):
         return self.title
+
 admin.site.register(Conclusion)
+
+class News(models.Model):
+    title = models.CharField(max_length=512)
+    text = models.TextField()
+    game = models.ForeignKey(Game)
+    photo = models.ForeignKey(Photo, blank=True)
+    pub_date = models.DateTimeField()
+
+    def __unicode__(self):
+        return self.title
+
+admin.site.register(News)
+
 
 class Synonims(models.Model):
     title = models.CharField(max_length=128)

@@ -130,7 +130,7 @@ def collect_all():
     return 'ok'
 
 
-def collect_video_game(game):
+def collect_video_game(game, live=False, test=False):
     delta = datetime.timedelta(120)
     begin_date = game.pub_date.isoformat() + 'T00:00:00Z'
     end_date = game.pub_date + delta
@@ -139,7 +139,11 @@ def collect_video_game(game):
 
     # Call the search.list method to retrieve results matching the specified
     # query term.
-    q = 'Highlights %s %s' % (game.team1.title, game.team2.title)
+    if live:
+        q = 'Live'
+    else:
+        q = 'Highlights'
+    q += ' %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)
     search_response = youtube.search().list(
         q=q,
         # channelId="UCTv-XvfzLX3i4IGWAm4sbmA",
@@ -168,13 +172,16 @@ def collect_video_game(game):
             video = video_response.get("items", [])[0]
             thumbs = video['snippet']['thumbnails']
             image_url = thumbs['high']['url']
-            photo = Photo(title=title)
-            name = urlparse(image_url).path.split('/')[-1]
-            content = urllib.urlretrieve(image_url)
-            photo.image.save(name, File(open(content[0])), save=True)
-            player = video['player']['embedHtml']
-            game.images.add(photo)
-            game.video = player
-            game.save()
-            break
+            if not test:
+                photo = Photo(title=title)
+                name = urlparse(image_url).path.split('/')[-1]
+                content = urllib.urlretrieve(image_url)
+                photo.image.save(name, File(open(content[0])), save=True)
+                player = video['player']['embedHtml']
+                game.images.add(photo)
+                game.video = player
+                game.save()
+                break
+            else:
+                print title
     return 'ok'
