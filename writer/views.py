@@ -140,7 +140,7 @@ def collect_video_game(game, live=False, test=False):
     # Call the search.list method to retrieve results matching the specified
     # query term.
     if live:
-        q = 'Live'
+        q = 'stream'
     else:
         q = 'Highlights'
     q += ' %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)

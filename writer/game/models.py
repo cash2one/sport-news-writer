@@ -853,8 +853,17 @@ class Game(models.Model):
         if self.goals.count() > 1:
             last_goal_frase = self.last_goal_frase()
         conclusion = self.conclusion()
+        news_text = """
+                    <p><b>%s</b></p>
+                    <p>%s</p>
+                    <p>%s</p>
+                    <p>%s</p>
+                    <p><b>%s</b></p>
+                    """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
+        news = News(title=title, text=news_text, photo=self.images.first(), pub_date = self.pub_date)
+        news.save()
         self.stop()
-        return title + '\n' + begin_frase + '. ' + first_goal_frase + '\n' + reg_goals + '\n' + last_goal_frase + '\n' + conclusion + '\n'
+        return news
 
 admin.site.register(Game)
 
