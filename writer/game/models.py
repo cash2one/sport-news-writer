@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 from django.db import models
 from django.db.models import Q
 from django.contrib import admin
@@ -29,7 +32,7 @@ def list_authors(authors):
         if (i != len(authors) - 1) or (len(authors) == 1):
             ret += '%s (%s) ' % (author, goals)
         else:
-            ret += 'si %s (%s) ' % (author, goals)
+            ret += u'şi %s (%s) ' % (author, goals)
     return ret
 
 
@@ -161,27 +164,27 @@ class Team(models.Model):
             cei = 'cei de la'
             echipa = 'echipa'
             gazde = 'gazdele'
-            oaspeti = 'oaspetii'
+            oaspeti = u'oaspeţii'
             elevii = 'elevii'
             lider = 'liderul'
-            loser = 'lanterna rosie'
+            loser = u'lanterna roşie'
             variants_s.append(self.title)
         elif case == 'g':
             cei = 'celor de la'
             echipa = 'echipei'
             gazde = 'gazdelor'
-            oaspeti = 'oaspetilor'
+            oaspeti = u'oaspeţilor'
             elevii = 'elevilor'
             lider = 'liderului'
-            loser = 'lanternei rosii a'
+            loser = u'lanternei roşii a'
         elif case == 'a':
             cei = 'pe cei de la'
             echipa = 'echipei'
             gazde = 'gazdelor'
-            oaspeti = 'oaspetilor'
+            oaspeti = u'oaspeţilor'
             elevii = 'elevilor'
             lider = 'liderului'
-            loser = 'lanternei rosii a'
+            loser = u'lanternei roşii a'
         if self.city:
             variants_s +=[
                 echipa + ' din ' + self.city
@@ -474,16 +477,24 @@ class Goal(models.Model):
         v = []
         if (m < 44) and (m > 30):
             diff = 45 - m
-            b_s = 'cu %d minute inainte de' % diff
+            b_s = u'cu %d minute înainte de' % diff
+            if diff == 15:
+                b_s = u'cu un sfert de oră înainte de'
+            elif diff == 30:
+                b_s = u'cu o jumatate de oră înainte de'
             v += [
             '%s finalul primei reprize' % b_s,
             '%s a pleca la vestiare' % b_s,
-            'cu %d minute pina la pauza' % diff,
+            u'cu %d minute până la pauză' % diff,
             '%s finalul primului mitan' % b_s,
             ]
         elif (m < 88) and (m > 75):
             diff = 90 - m
-            b_s = 'cu %d minute inainte de' % diff
+            b_s = u'cu %d minute înainte de' % diff
+            if diff == 15:
+                b_s = u'cu un sfert de oră înainte de'
+            elif diff == 30:
+                b_s = u'cu o jumătate de oră înainte de'
             v += [
             '%s finalul reprizei secunde' % b_s,
             '%s a fluierul final' % b_s,
@@ -495,18 +506,18 @@ class Goal(models.Model):
             prev_goal_diff = m - self.game_set.first().goals.all()[order - 1].minute
         if (order > 0) and (prev_goal_diff < 15) and (prev_goal_diff > 1):
             v += [
-                '%d minute mai tirziu' % (m - self.game_set.first().goals.all()[order - 1].minute),
-                'dupa inca %d minute' % (m - self.game_set.first().goals.all()[order - 1].minute),
+                u'%d minute mai târziu' % (m - self.game_set.first().goals.all()[order - 1].minute),
+                u'după încă %d minute' % (m - self.game_set.first().goals.all()[order - 1].minute),
             ]
         elif prev_goal_diff and (prev_goal_diff < 2):
             v += [
-                'citeva clipe mai tirziu',
-                'citeva secunde mai tirziu',
-                'dupa citeva clipe',
-                'dupa citeva secunde',
+                u'câteva clipe mai târziu',
+                u'câteva secunde mai târziu',
+                u'după câteva clipe',
+                u'după câteva secunde',
             ]
         v += [
-            'in minutul %d' % m,
+            u'în minutul %d' % m,
         ]
         return random.sample(v, 1)[0]
 
@@ -835,7 +846,7 @@ class Game(models.Model):
         while begin_frase == title:
             begin_frase = self.title_frase()
         if self.lupta_loc():
-            begin_frase += ' In aceasta seara cele doua echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
+            begin_frase += u' În această seară cele două echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
         first_goal_frase = ''
         if self.goals.count() > 0:
             first_goal_frase = self.first_goal_frase()
@@ -1005,6 +1016,7 @@ class Conclusion(models.Model):
         return self.title
 
 admin.site.register(Conclusion)
+
 
 class News(models.Model):
     title = models.CharField(max_length=512)
