@@ -32,6 +32,7 @@ def list_authors(authors):
             ret += 'si %s (%s) ' % (author, goals)
     return ret
 
+
 def get_season():
     """
     It's a helper function for getting the current season. Is used, for example, in creation of game item.
@@ -425,6 +426,13 @@ class Goal(models.Model):
                 '',
             ]
         return random.sample(v, 1)[0]
+
+    def score(self):
+        game = self.game_set.first()
+        goal_list = list(game.goals.order_by('minute'))
+        index = goal_list.index(self)
+        score = game.scor_list()[index]
+        return '%d:%d' % (score[0], score[1])
 
     def only(self):
         only = True
@@ -845,9 +853,15 @@ class Game(models.Model):
                         authors[goal.author.name] = cg + [str(goal.minute)]
                     goals = list_authors(authors)
                     if i == 0:
-                        reg_goals += ' Urmeaza golurile lui %s trimise in aceeasi poarta.' % goals
+                        first = True
                     else:
-                        reg_goals += ' %s a ripostat prin reusitele lui %s.' % (group[0].team.n(), goals)
+                        first = False
+                    goal_group_frase = Template(random.sample(GoalGroupFrase.objects.filter(first=first).all(), 1)[0].title)
+                    team = group[0].team
+                    recipient = group[0].recipient
+                    score = group[-1].score()
+                    reg_goals += goal_group_frase.render(Context({
+                        'team': team, 'recipient': recipient, 'score': score, 'authors': goals}))
                 elif len(group) == 1:
                     reg_goals += ' %s' % self.regular_goal_frase(group[0])
         last_goal_frase = ''
