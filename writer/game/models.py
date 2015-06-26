@@ -175,6 +175,8 @@ class Team(models.Model):
             elevii = 'elevii'
             lider = 'liderul'
             loser = u'lanterna roşie'
+            jucatorii = u'jucătorii'
+            fotbalistii = u'fotbaliştii'
             variants_s.append(self.title)
         elif case == 'g':
             cei = 'celor de la'
@@ -184,6 +186,8 @@ class Team(models.Model):
             elevii = 'elevilor'
             lider = 'liderului'
             loser = u'lanternei roşii a'
+            jucatorii = u'jucătorilor'
+            fotbalistii = u'fotbaliştilor'
         elif case == 'a':
             cei = 'pe cei de la'
             echipa = 'echipei'
@@ -192,6 +196,8 @@ class Team(models.Model):
             elevii = 'elevilor'
             lider = 'liderului'
             loser = u'lanternei roşii a'
+            jucatorii = u'jucătorii'
+            fotbalistii = u'fotbaliştii'
         if self.city:
             variants_s +=[
                 echipa + ' din ' + self.city
@@ -201,7 +207,9 @@ class Team(models.Model):
         ]
         variants_p += [
             cei + ' ' + self.title,
-            elevii + ' lui ' + self.couch
+            elevii + ' lui ' + self.couch,
+            jucatorii + ' lui ' + self.couch,
+            fotbalistii + ' lui ' + self.couch
         ]
         if self.host:
             variants_s.append(echipa + ' gazda')
@@ -708,7 +716,7 @@ class Game(models.Model):
     #############
     # Templates #
     #############
-    def title_frase(self):
+    def title_frase(self, debug=False):
         first_id = Game.objects.filter(campionat=self.campionat).first().id
         not_null = Q(title__isnull=False)
         diff = Q(min_score_diference__lte=self.score_diference()) & Q(max_score_diference__gte=self.score_diference())
@@ -747,20 +755,30 @@ class Game(models.Model):
                 res = TitleFrase.objects.filter(args).filter(not_null).all()
             else:
                 res |= TitleFrase.objects.filter(args).filter(not_null).all()
-        tpl_string = random.sample(res, 1)[0].title
+        frase = random.sample(res, 1)[0]
+        tpl_string = frase.title
         tpl = Template(tpl_string)
-        return tpl.render(Context({'game': self, 'wins': wins, 'loses': loses}))
+        ret = ''
+        if debug:
+            ret += '(%d)' % frase.id
+        ret += tpl.render(Context({'game': self, 'wins': wins, 'loses': loses}))
+        return ret
 
-    def first_goal_frase(self):
+    def first_goal_frase(self, debug=False):
         args = Q()
         args &= Q(only=self.only())
         args &= Q(min_minute__lte=self.goals.all()[0].minute)
         args &= Q(max_minute__gte=self.goals.all()[0].minute)
         args &= Q(title__isnull=False)
-        tpl = Template(random.sample(FirstGoalFrase.objects.filter(args).all(), 1)[0].title)
-        return tpl.render(Context({'game': self,}))
+        frase = random.sample(FirstGoalFrase.objects.filter(args).all(), 1)[0]
+        tpl = Template(frase.title)
+        ret = ''
+        if debug:
+            ret += '(%d)' % frase.id
+        ret += tpl.render(Context({'game': self,}))
+        return ret
 
-    def regular_goal_frase(self, goal):
+    def regular_goal_frase(self, goal, debug=False):
         args = Q()
         if goal.only() and goal.equal():
             args &= Q(only=goal.only())
@@ -770,10 +788,15 @@ class Game(models.Model):
         args &= Q(reverse=goal.reverse())
         args &= Q(duble=False)
         args &= Q(triple=False)
-        tpl = Template(random.sample(RegularGoalFrase.objects.filter(args).all(), 1)[0].title)
-        return tpl.render(Context({'goal': goal,}))
+        frase = random.sample(RegularGoalFrase.objects.filter(args).all(), 1)[0]
+        tpl = Template(frase.title)
+        ret = ''
+        if debug:
+            ret += '(%d)' % frase.id
+        ret += tpl.render(Context({'goal': goal,}))
+        return ret
 
-    def last_goal_frase(self):
+    def last_goal_frase(self, debug=False):
         last_goal = self.goals.last()
         scor_list = self.scor_list()
         pre_last_scor = scor_list[len(scor_list) - 2]
@@ -791,15 +814,20 @@ class Game(models.Model):
         args &= Q(equal=equal)
         args &= Q(victory=victory)
         args &= Q(title__isnull=False)
-        print self, only, self.intoarcere(), equal, victory
-        tpl = Template(random.sample(LastGoalFrase.objects.filter(args).all(), 1)[0].title)
-        return tpl.render(Context({'game': self, 'goal': last_goal}))
+        frase = random.sample(LastGoalFrase.objects.filter(args).all(), 1)[0]
+        tpl = Template(frase.title)
+        ret = ''
+        if debug:
+            ret += '(%d)' % frase.id
+        ret += tpl.render(Context({'game': self, 'goal': last_goal}))
+        return ret
 
-    def conclusion(self):
+    def conclusion(self, debug=False):
         args = Q()
         args &= Q(urcare=(self.urcare() is not False))
         args &= Q(coborire=(self.coborire() is not False))
-        tpl = Template(random.sample(Conclusion.objects.filter(args).all(), 1)[0].title)
+        frase = random.sample(Conclusion.objects.filter(args).all(), 1)[0]
+        tpl = Template(frase.title)
         var = {
             'game': self,
             'loc1': self.team1.loc(self.id), 'loc2': self.team2.loc(self.id),
@@ -821,7 +849,11 @@ class Game(models.Model):
             var['supraclasat'] = coborire[0][3]
             var['supraclasat_points'] = coborire[0][4]
             var['supraclasat_loc'] = coborire[0][5]
-        return tpl.render(Context(var))
+        ret = ''
+        if debug:
+            ret += '(%d)' % frase.id
+        ret += tpl.render(Context(var))
+        return ret
 
     ###############
     # Making news #
@@ -846,17 +878,17 @@ class Game(models.Model):
             team.action = ''
             team.save()
 
-    def news(self):
+    def news(self, debug=False):
         self.start()
         title = self.title_frase()
-        begin_frase = self.title_frase()
+        begin_frase = self.title_frase(debug)
         while begin_frase == title:
-            begin_frase = self.title_frase()
+            begin_frase = self.title_frase(debug)
         if self.lupta_loc():
             begin_frase += u' În această seară cele două echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
         first_goal_frase = ''
         if self.goals.count() > 0:
-            first_goal_frase = self.first_goal_frase()
+            first_goal_frase = self.first_goal_frase(debug)
         reg_goals = ''
         if self.goals.count() > 2:
             for i, group in enumerate(self.goals_set()):
@@ -881,11 +913,11 @@ class Game(models.Model):
                     reg_goals += goal_group_frase.render(Context({
                         'team': team, 'recipient': recipient, 'score': score, 'authors': goals}))
                 elif len(group) == 1:
-                    reg_goals += ' %s' % self.regular_goal_frase(group[0])
+                    reg_goals += ' %s' % self.regular_goal_frase(group[0], debug)
         last_goal_frase = ''
         if self.goals.count() > 1:
-            last_goal_frase = self.last_goal_frase()
-        conclusion = self.conclusion()
+            last_goal_frase = self.last_goal_frase(debug)
+        conclusion = self.conclusion(debug)
         news_text = """
                     <p><b>%s</b></p>
                     <p>%s</p>
@@ -894,8 +926,9 @@ class Game(models.Model):
                     <p><b>%s</b></p>
                     """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
         news_text = typo(news_text)
-        # news = News(title=title, text=news_text, photo=self.images.first(), pub_date = self.pub_date)
-        # news.save()
+        if not debug:
+            news = News(title=title, text=news_text, photo=self.images.first(), pub_date=self.pub_date)
+            news.save()
         self.stop()
         return title, news_text
 
