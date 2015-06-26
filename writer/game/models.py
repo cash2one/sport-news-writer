@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from django.db import models
 from django.db.models import Q
 from django.contrib import admin
@@ -10,6 +9,7 @@ import random
 from django.template.base import add_to_builtins
 import ast
 import collections
+import re
 # Create your models here.
 
 
@@ -30,10 +30,17 @@ def list_authors(authors):
         if (i != 0) and (i != len(authors) - 1):
             ret += ', '
         if (i != len(authors) - 1) or (len(authors) == 1):
-            ret += '%s (%s) ' % (author, goals)
+            ret += '%s (%s)' % (author, goals)
         else:
-            ret += u'şi %s (%s) ' % (author, goals)
+            ret += u' şi %s (%s) ' % (author, goals)
     return ret
+
+
+def typo(value):
+    value = re.sub(r' ([,\.!\?])', r'\1 ', value)
+    value = re.sub(r'([,\.!\?])', r'\1 ', value)
+    value = re.sub(' +', ' ', value)
+    return value
 
 
 def get_season():
@@ -886,6 +893,7 @@ class Game(models.Model):
                     <p>%s</p>
                     <p><b>%s</b></p>
                     """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
+        news_text = typo(news_text)
         # news = News(title=title, text=news_text, photo=self.images.first(), pub_date = self.pub_date)
         # news.save()
         self.stop()
