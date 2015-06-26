@@ -554,6 +554,7 @@ class Game(models.Model):
     images = models.ManyToManyField(Photo, blank=True)
     video = models.TextField(blank=True, null=True)
     live = models.TextField(blank=True, null=True)
+    used_frases = models.TextField(default='{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}')
 
     def __unicode__(self):
         return self.team1.title + ' ' + str(self.goal_team1) + ':' + str(self.goal_team2) + ' ' + self.team2.title
@@ -716,7 +717,11 @@ class Game(models.Model):
     #############
     # Templates #
     #############
-    def title_frase(self, debug=False):
+    def title_frase(self, debug=False, begin=False):
+        used = ast.literal_eval(self.used_frases)
+        exclude = Q()
+        if begin:
+            exclude = Q(id=used['title'])
         first_id = Game.objects.filter(campionat=self.campionat).first().id
         not_null = Q(title__isnull=False)
         diff = Q(min_score_diference__lte=self.score_diference()) & Q(max_score_diference__gte=self.score_diference())
@@ -752,9 +757,9 @@ class Game(models.Model):
 
         for i, args in enumerate(sets):
             if i == 0:
-                res = TitleFrase.objects.filter(args).filter(not_null).all()
+                res = TitleFrase.objects.filter(args).filter(not_null).exclude(exclude).all()
             else:
-                res |= TitleFrase.objects.filter(args).filter(not_null).all()
+                res |= TitleFrase.objects.filter(args).filter(not_null).exclude(exclude).all()
         frase = random.sample(res, 1)[0]
         tpl_string = frase.title
         tpl = Template(tpl_string)
@@ -762,9 +767,16 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'game': self, 'wins': wins, 'loses': loses}))
+        if not begin:
+            used['title'] = frase.id
+        else:
+            used['begin'] = frase.id
+        self.used_frases = str(used)
+        self.save()
         return ret
 
     def first_goal_frase(self, debug=False):
+        used = ast.literal_eval(self.used_frases)
         args = Q()
         args &= Q(only=self.only())
         args &= Q(min_minute__lte=self.goals.all()[0].minute)
@@ -776,9 +788,16 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'game': self,}))
+        used['first'] = frase.id
+        self.used_frases = str(used)
+        self.save()
         return ret
 
     def regular_goal_frase(self, goal, debug=False):
+        used = ast.literal_eval(self.used_frases)
+        exclude = Q()
+        if used['regular']:
+            exclude = Q(id__in=used['regular'])
         args = Q()
         if goal.only() and goal.equal():
             args &= Q(only=goal.only())
@@ -788,15 +807,19 @@ class Game(models.Model):
         args &= Q(reverse=goal.reverse())
         args &= Q(duble=False)
         args &= Q(triple=False)
-        frase = random.sample(RegularGoalFrase.objects.filter(args).all(), 1)[0]
+        frase = random.sample(RegularGoalFrase.objects.filter(args).exclude(exclude).all(), 1)[0]
         tpl = Template(frase.title)
         ret = ''
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'goal': goal,}))
+        used['regular'].append(frase.id)
+        self.used_frases = str(used)
+        self.save()
         return ret
 
     def last_goal_frase(self, debug=False):
+        used = ast.literal_eval(self.used_frases)
         last_goal = self.goals.last()
         scor_list = self.scor_list()
         pre_last_scor = scor_list[len(scor_list) - 2]
@@ -820,9 +843,13 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'game': self, 'goal': last_goal}))
+        used['last'] = frase.id
+        self.used_frases = str(used)
+        self.save()
         return ret
 
     def conclusion(self, debug=False):
+        used = ast.literal_eval(self.used_frases)
         args = Q()
         args &= Q(urcare=(self.urcare() is not False))
         args &= Q(coborire=(self.coborire() is not False))
@@ -853,6 +880,9 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context(var))
+        used['conclusion'] = frase.id
+        self.used_frases = str(used)
+        self.save()
         return ret
 
     ###############
@@ -881,9 +911,7 @@ class Game(models.Model):
     def news(self, debug=False):
         self.start()
         title = self.title_frase()
-        begin_frase = self.title_frase(debug)
-        while begin_frase == title:
-            begin_frase = self.title_frase(debug)
+        begin_frase = self.title_frase(debug, begin=True)
         if self.lupta_loc():
             begin_frase += u' În această seară cele două echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
         first_goal_frase = ''
@@ -906,12 +934,17 @@ class Game(models.Model):
                         first = True
                     else:
                         first = False
-                    goal_group_frase = Template(random.sample(GoalGroupFrase.objects.filter(first=first).all(), 1)[0].title)
+                    used = ast.literal_eval(self.used_frases)
+                    frase = random.sample(GoalGroupFrase.objects.filter(first=first).exclude(id__in=used['group']).all(), 1)[0]
+                    goal_group_frase = Template(frase.title)
                     team = group[0].team
                     recipient = group[0].recipient
                     score = group[-1].score()
                     reg_goals += goal_group_frase.render(Context({
                         'team': team, 'recipient': recipient, 'score': score, 'authors': goals}))
+                    used['group'].append(frase.id)
+                    self.used_frases = str(used)
+                    self.save()
                 elif len(group) == 1:
                     reg_goals += ' %s' % self.regular_goal_frase(group[0], debug)
         last_goal_frase = ''
@@ -929,6 +962,9 @@ class Game(models.Model):
         if not debug:
             news = News(title=title, text=news_text, photo=self.images.first(), pub_date=self.pub_date)
             news.save()
+        else:
+            self.used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
+            self.save()
         self.stop()
         return title, news_text
 
