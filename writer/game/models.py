@@ -960,7 +960,7 @@ class Game(models.Model):
                     """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
         news_text = typo(news_text)
         if not debug:
-            news = News(title=title, text=news_text, photo=self.images.first(), pub_date=self.pub_date)
+            news = News(title=title, text=news_text, photo=self.images.first(), pub_date=self.pub_date, game=self)
             news.save()
         else:
             self.used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'

@@ -1,4 +1,4 @@
-from game.models import Game, Goal, Team, Campionat, Player, Photo
+from game.models import Game, Goal, Team, Campionat, Player, Photo, News
 from django.db.models import Q
 from re import split, sub
 import urllib2
@@ -10,6 +10,7 @@ from unidecode import unidecode
 from urlparse import urlparse
 import urllib
 from django.core.files import File
+from django.shortcuts import render
 
 
 DEVELOPER_KEY = "AIzaSyB0KMU3GZcwr5D-UqN46ZhlnjQLyNQwi20"
@@ -155,8 +156,6 @@ def collect_video_game(game, live=False, test=False):
         publishedBefore=end_date
     ).execute()
 
-    # Add each result to the appropriate list, and then display the lists of
-    # matching videos, channels, and playlists.
     for search_result in search_response.get("items", []):
         title = unidecode(search_result['snippet']['title'])
         match = True
@@ -179,9 +178,26 @@ def collect_video_game(game, live=False, test=False):
                 photo.image.save(name, File(open(content[0])), save=True)
                 player = video['player']['embedHtml']
                 game.images.add(photo)
-                game.video = player
+                if not live:
+                    game.video = player
+                else:
+                    game.live = player
                 game.save()
                 break
             else:
                 print title
     return 'ok'
+
+
+def base(request):
+    news_list = News.objects.order_by('-pub_date')[0:30]
+    campionat_list = Campionat.objects.all()
+    return render(request, 'index.html',
+                  {'news_list': news_list, 'campionat_list': campionat_list})
+
+
+def news(request, news_id):
+    news_item = News.objects.get(id=news_id)
+    campionat_list = Campionat.objects.all()
+    return render(request, 'news.html',
+                  {'news_item': news_item, 'campionat_list': campionat_list})
