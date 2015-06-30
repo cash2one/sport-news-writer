@@ -156,7 +156,8 @@ def collect_video_game(game, live=False, test=False):
         order="date",
         publishedAfter=begin_date,
         publishedBefore=end_date,
-        videoDuration=duration
+        videoDuration=duration,
+        videoEmbeddable="true"
     ).execute()
 
     for search_result in search_response.get("items", []):
