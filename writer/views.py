@@ -133,6 +133,8 @@ def collect_all():
 
 def collect_video_game(game, live=False, test=False):
     delta = datetime.timedelta(120)
+    if live:
+        delta = datetime.timedelta(24)
     begin_date = game.pub_date.isoformat() + 'T00:00:00Z'
     end_date = game.pub_date + delta
     end_date = end_date.isoformat() + 'T00:00:00Z'
