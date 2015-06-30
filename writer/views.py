@@ -201,3 +201,10 @@ def news(request, news_id):
     campionat_list = Campionat.objects.all()
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list})
+
+def campionat(request, campionat_id):
+    campionat_item = Campionat.objects.get(id=campionat_id)
+    news_list = News.objects.filter(game__campionat=campionat_item).order_by('-pub_date')[0:30]
+    campionat_list = Campionat.objects.all()
+    return render(request, 'index.html',
+                  {'news_list': news_list, 'campionat_list': campionat_list})
