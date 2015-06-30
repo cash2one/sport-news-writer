@@ -142,8 +142,10 @@ def collect_video_game(game, live=False, test=False):
     # query term.
     if live:
         q = 'stream'
+        duration = 'long'
     else:
         q = 'Highlights'
+        duration = 'any'
     q += ' %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)
     search_response = youtube.search().list(
         q=q,
@@ -153,7 +155,8 @@ def collect_video_game(game, live=False, test=False):
         maxResults=50,
         order="date",
         publishedAfter=begin_date,
-        publishedBefore=end_date
+        publishedBefore=end_date,
+        videoDuration=duration
     ).execute()
 
     for search_result in search_response.get("items", []):
