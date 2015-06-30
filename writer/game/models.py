@@ -558,6 +558,12 @@ class Game(models.Model):
     live = models.TextField(blank=True, null=True)
     used_frases = models.TextField(default='{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}')
 
+    class Meta:
+        index_together = [
+            ['pub_date', 'campionat'],
+            ['pub_date', 'campionat', 'season'],
+        ]
+
     def __unicode__(self):
         return self.team1.title + ' ' + str(self.goal_team1) + ':' + str(self.goal_team2) + ' ' + self.team2.title
 
