@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+{% block slider %}
+            <!-- PAGE TITLE -->
+            <div class="page-title">{{ news_item }}</div>
+            <!-- FEATURED IMAGE -->
+            <div class="page-img">
+                <img src="{{ news_item.photo.image.url }}" alt="" />
+            </div>
+{% endblock %}
+{% block content %}
+                    <article>
+                        <!-- POST DATE -->
+                        <div class="blogpostdate">{{ news.pub_date }}</div> 
+                        {{ news_item.text|safe }}
+                        {% if news_item.game.live %}
+                            <h3>LIVE:</h3>
+                            {{ news_item.game.live|safe }}
+                        {% endif %}
+                        {% if news_item.game.video %}
+                            <h3>Rezumat:</h3>
+                            {{ news_item.game.video|safe }}
+                        {% endif %}
+                        {% if news_item.game.images.count > 1 %}
+                            <h3>Galerie foto:</h3>
+                            {% for image in news_item.game.images.all %}
+                                <img src="{{ image.image.url }}" alt="{{ image.title }}" />
+                            {% endfor %}
+                        {% endif %}
+                    </article>
+                    <hr/>
+{% endblock %}
