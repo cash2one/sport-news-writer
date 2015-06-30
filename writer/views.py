@@ -140,31 +140,27 @@ def collect_video_game(game, live=False, test=False):
 
     # Call the search.list method to retrieve results matching the specified
     # query term.
+    kwargs = {}
     if live:
-        q = 'stream'
-        duration = 'long'
+        kwargs['videoDuration'] = 'long'
+        kwargs['q'] = '%s %s' % (game.team1.title, game.team2.title)
+        kwargs['eventType'] = 'completed'
     else:
-        q = 'Highlights'
-        duration = 'any'
-    q += ' %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)
-    search_response = youtube.search().list(
-        q=q,
-        # channelId="UCTv-XvfzLX3i4IGWAm4sbmA",
-        part="id,snippet",
-        type="video",
-        maxResults=50,
-        order="date",
-        publishedAfter=begin_date,
-        publishedBefore=end_date,
-        videoDuration=duration,
-        videoEmbeddable="true"
-    ).execute()
+        kwargs['q'] = 'Highlights %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)
+    kwargs['part'] = 'id,snippet'
+    kwargs['type'] = 'video'
+    kwargs['maxResults'] = 50
+    kwargs['order'] = 'date'
+    kwargs['publishedAfter'] = begin_date
+    kwargs['publishedBefore'] = end_date
+    kwargs['videoEmbeddable'] = "true"
+    search_response = youtube.search().list(**kwargs).execute()
 
     for search_result in search_response.get("items", []):
         title = unidecode(search_result['snippet']['title'])
         match = True
-        for word in q.split(' '):
-            if not word in title:
+        for word in kwargs['q'].split(' '):
+            if word not in title:
                 match = False
         if match:
             videoId = search_result['id']['videoId']

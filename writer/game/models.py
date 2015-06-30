@@ -548,7 +548,7 @@ class Game(models.Model):
     team2 = models.ForeignKey(Team, related_name='game_team2')
     goal_team1 = models.IntegerField(default=0)
     goal_team2 = models.IntegerField(default=0)
-    pub_date = models.DateField(blank=True, null=True)
+    pub_date = models.DateField(blank=True, null=True, db_index=True)
     goals = models.ManyToManyField(Goal, blank=True, null=True)
     url = models.CharField(max_length=512, blank=True, null=True)
     classament = models.TextField(blank=True, null=True)
@@ -1109,7 +1109,7 @@ class News(models.Model):
     text = models.TextField()
     game = models.ForeignKey(Game)
     photo = models.ForeignKey(Photo, blank=True)
-    pub_date = models.DateTimeField()
+    pub_date = models.DateTimeField(db_index=True)
 
     def __unicode__(self):
         return self.title
@@ -1118,7 +1118,7 @@ admin.site.register(News)
 
 
 class Synonims(models.Model):
-    title = models.CharField(max_length=128)
+    title = models.CharField(max_length=128, db_index=True)
     syns = models.TextField()
     used = models.TextField(blank=True, null=True)
     def __unicode__(self):
