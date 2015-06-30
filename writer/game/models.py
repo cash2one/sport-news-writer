@@ -84,9 +84,11 @@ class Campionat(models.Model):
     title = models.CharField(max_length=128)
     #: the url on livescore for collecting games
     url = models.CharField(max_length=1024)
+    #: the name of country where the championship is played
+    country = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
-        return self.title
+        return self.country
 admin.site.register(Campionat)
 
 
