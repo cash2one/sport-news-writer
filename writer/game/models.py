@@ -962,8 +962,15 @@ class Game(models.Model):
                     """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
         news_text = typo(news_text)
         if not debug:
-            news = News(title=title, text=news_text, photo=self.images.first(), pub_date=self.pub_date, game=self)
-            news.save()
+            image = None
+            if self.images.first():
+                image = self.images.first()
+            elif Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).count():
+                g = Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).order_by('-pub_date').first()
+                image = g.images.first()
+            if image:
+                news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self)
+                news.save()
         else:
             self.used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
             self.save()
