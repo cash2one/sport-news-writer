@@ -82,6 +82,8 @@ class Campionat(models.Model):
     """
     #: the name of league
     title = models.CharField(max_length=128)
+    #: slug pentru human readable urls
+    slug = models.CharField(max_length=160)
     #: the url on livescore for collecting games
     url = models.CharField(max_length=1024)
     #: the name of country where the championship is played
@@ -1127,6 +1129,7 @@ admin.site.register(Conclusion)
 
 class News(models.Model):
     title = models.CharField(max_length=512)
+    slug = models.CharField(max_length=1024, blank=True, null=True)
     text = models.TextField()
     game = models.ForeignKey(Game)
     photo = models.ForeignKey(Photo, blank=True)

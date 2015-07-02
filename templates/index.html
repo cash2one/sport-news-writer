@@ -46,7 +46,7 @@
                     </li>
                     {% for campionat in campionat_list %}
                         <li>
-                            <a href="/campionat/{{ campionat.id }}">{{ campionat }}</a>
+                            <a href="{% url 'campionat' campionat.slug %}">{{ campionat }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -268,15 +268,17 @@
                     {% for news in news_list %}
                         <article class="post">
                             <figure>
-                                <a href="/news/{{ news.id }}/">
+                                <a href="{% url 'news' news.game.campionat.slug news.slug %}">
                                     <img src="{{ news.photo.image.url }}" alt="" />
                                 </a>
                                 <figcaption>
-                                    <a href="/news/{{ news.id }}/"><h2>{{ news.game }}</h2></a>
+                                    <a href="{% url 'news' news.game.campionat.slug news.slug %}"><h2>{{ news.game }}</h2></a>
                                     <div class="post-date">{{ news.pub_date }}</div>
                                 </figcaption>
                             </figure>
-                            <a href="/news/{{ news.id }}/"><h2>{% if news.game.live %}LIVE | {% endif %}{{ news.title }}</h2></a>
+                            <h2>
+                                <a href="{% url 'news' news.game.campionat.slug news.slug %}">{% if news.game.live %}LIVE | {% endif %}{{ news.title }}</a>
+                            </h2>
                             <p>{{ news.text|safe|truncatewords_html:20 }}
                                 <a href="/news/{{ news.id }}">Află mai mult...</a>
                             </p>

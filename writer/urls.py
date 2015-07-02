@@ -5,9 +5,9 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-                       (r'^$', base),
-                       (r'^news/(\d+)/$', news),
-                       (r'^campionat/(\d+)/$', campionat),
+    url(r'^$', base),
+    url(r'^(?P<campionat>[\w-]+)/(?P<title>[\w-]+)/$', news, name='news'),
+    url(r'^(?P<campionat>[\w-]+)/$', campionat, name='campionat'),
     # Examples:
     # url(r'^$', 'writer.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),

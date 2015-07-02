@@ -154,7 +154,7 @@ def collect_video_game(game, live=False, test=False):
     kwargs = {}
     if live:
         kwargs['videoDuration'] = 'long'
-        kwargs['q'] = '%s %s' % (game.team1.title, game.team2.title)
+        kwargs['q'] = 'stream %s %s' % (game.team1.title, game.team2.title)
         kwargs['eventType'] = 'completed'
     else:
         kwargs['q'] = 'Highlights %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)
@@ -211,15 +211,15 @@ def base(request):
                   {'news_list': newses, 'campionat_list': campionat_list})
 
 
-def news(request, news_id):
-    news_item = News.objects.get(id=news_id)
+def news(request, campionat=None, title=None):
+    news_item = News.objects.filter(game__campionat__slug=campionat, slug=title).first()
     campionat_list = Campionat.objects.all()
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list})
 
 
-def campionat(request, campionat_id):
-    campionat_item = Campionat.objects.get(id=campionat_id)
+def campionat(request, campionat=None):
+    campionat_item = Campionat.objects.get(slug=campionat)
     news_list = News.objects.filter(game__campionat=campionat_item).order_by('-pub_date')
     campionat_list = Campionat.objects.all()
     paginator = Paginator(news_list, 10)
