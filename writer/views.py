@@ -1,4 +1,4 @@
-from game.models import Game, Goal, Team, Campionat, Player, Photo, News
+from game.models import Game, Goal, Team, Campionat, Player, Photo, News, Couch
 from django.db.models import Q
 from re import split, sub
 import urllib2
@@ -69,8 +69,16 @@ def collect(campionat):
                             print score_link
                             score_soup = Soup(urllib2.urlopen(score_link))
                             couches_and_formulas = select(score_soup, 'div.hidden div.col-offset-1')
-                            home_team.couch = couches_and_formulas[2].text
-                            away_team.couch = couches_and_formulas[3].text
+                            couches = []
+                            for couch_name in [couches_and_formulas[2].text, couches_and_formulas[3].text]:
+                                if Couch.objects.filter(name=couch_name).count():
+                                    couch = Couch.objects.filter(name=couch_name).first()
+                                else:
+                                    couch = Couch(name=couch_name)
+                                    couch.save()
+                                couches.append(couch)
+                            home_team.couch_human = couches[0]
+                            away_team.couch_human = couches[1]
                             home_team.save()
                             away_team.save()
                             score_row_list = select(score_soup, 'div.row-gray')

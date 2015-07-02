@@ -110,6 +110,16 @@ class Player(models.Model):
 admin.site.register(Player)
 
 
+class Couch(models.Model):
+    name = models.CharField(max_length=255)
+    photo = models.ManyToManyField(Photo, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+admin.site.register(Couch)
+
+
 class Team(models.Model):
     """
     The model for team
@@ -119,7 +129,7 @@ class Team(models.Model):
     #: The home city of team (is used in sinonim name forming)
     city = models.CharField(max_length=128, blank=True, null=True)
     #: The name of couch (used in sinonim name forming)
-    couch = models.CharField(max_length=128, blank=True, null=True)
+    couch_human = models.ForeignKey(Couch, blank=True, null=True)
     #: The temporary value. If true - the team is host of given name. Is nulled after finish writing news.
     host = models.NullBooleanField(blank=True, null=True)
     #: Temporary value. If true - the team is on first place in league. Is nulled after finish writing news.
@@ -209,14 +219,14 @@ class Team(models.Model):
                 gruparea + ' din ' + self.city
             ]
         variants_s += [
-            echipa + ' lui ' + self.couch,
-            gruparea + ' lui ' + self.couch,
+            echipa + ' lui ' + self.couch_human.name,
+            gruparea + ' lui ' + self.couch_human.name,
         ]
         variants_p += [
             cei + ' ' + self.title,
-            elevii + ' lui ' + self.couch,
-            jucatorii + ' lui ' + self.couch,
-            fotbalistii + ' lui ' + self.couch
+            elevii + ' lui ' + self.couch_human.name,
+            jucatorii + ' lui ' + self.couch_human.name,
+            fotbalistii + ' lui ' + self.couch_human.name
         ]
         if self.host:
             variants_s.append(echipa + ' gazda')
