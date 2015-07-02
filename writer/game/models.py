@@ -172,6 +172,7 @@ class Team(models.Model):
         if case == 'n':
             cei = 'cei de la'
             echipa = 'echipa'
+            gruparea = 'gruparea'
             gazde = 'gazdele'
             oaspeti = u'oaspeţii'
             elevii = 'elevii'
@@ -182,6 +183,7 @@ class Team(models.Model):
             variants_s.append(self.title)
         elif case == 'g':
             cei = 'celor de la'
+            gruparea = u'grupării'
             echipa = 'echipei'
             gazde = 'gazdelor'
             oaspeti = u'oaspeţilor'
@@ -193,6 +195,7 @@ class Team(models.Model):
         elif case == 'a':
             cei = 'pe cei de la'
             echipa = 'echipei'
+            gruparea = 'gruparea'
             gazde = 'gazdelor'
             oaspeti = u'oaspeţilor'
             elevii = 'elevilor'
@@ -202,10 +205,12 @@ class Team(models.Model):
             fotbalistii = u'fotbaliştii'
         if self.city:
             variants_s +=[
-                echipa + ' din ' + self.city
+                echipa + ' din ' + self.city,
+                gruparea + ' din ' + self.city
             ]
         variants_s += [
             echipa + ' lui ' + self.couch,
+            gruparea + ' lui ' + self.couch,
         ]
         variants_p += [
             cei + ' ' + self.title,

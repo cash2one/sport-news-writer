@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ro">
+{% load bootstrap_pagination %}
     
     <head>
         <title>Sport-Express.US</title>
@@ -284,9 +285,7 @@
                     {% endfor %}
                     <!-- VIEW ALL BUTTON -->
                     <div class="blogpager">
-                        <div class="previous">
-                            <a href="blog.html" class="button next-prev">View All</a>
-                        </div>
+                        {% bootstrap_paginate news_list range=10 %}
                     </div>
                     {% endblock %}
                 </section>

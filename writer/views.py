@@ -11,6 +11,7 @@ from urlparse import urlparse
 import urllib
 from django.core.files import File
 from django.shortcuts import render
+from django.core.paginator import Paginator
 
 
 DEVELOPER_KEY = "AIzaSyB0KMU3GZcwr5D-UqN46ZhlnjQLyNQwi20"
@@ -192,10 +193,14 @@ def collect_video_game(game, live=False, test=False):
 
 
 def base(request):
-    news_list = News.objects.order_by('-pub_date')[0:30]
+    news_list = News.objects.order_by('-pub_date')
+    paginator = Paginator(news_list, 10)
+
+    page = request.GET.get('page', 1)
+    newses = paginator.page(page)
     campionat_list = Campionat.objects.all()
     return render(request, 'index.html',
-                  {'news_list': news_list, 'campionat_list': campionat_list})
+                  {'news_list': newses, 'campionat_list': campionat_list})
 
 
 def news(request, news_id):
@@ -204,9 +209,14 @@ def news(request, news_id):
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list})
 
+
 def campionat(request, campionat_id):
     campionat_item = Campionat.objects.get(id=campionat_id)
-    news_list = News.objects.filter(game__campionat=campionat_item).order_by('-pub_date')[0:30]
+    news_list = News.objects.filter(game__campionat=campionat_item).order_by('-pub_date')
     campionat_list = Campionat.objects.all()
+    paginator = Paginator(news_list, 10)
+
+    page = request.GET.get('page', 1)
+    newses = paginator.page(page)
     return render(request, 'index.html',
-                  {'news_list': news_list, 'campionat_list': campionat_list})
+                  {'news_list': newses, 'campionat_list': campionat_list})
