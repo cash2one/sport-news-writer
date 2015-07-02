@@ -10,6 +10,7 @@ from django.template.base import add_to_builtins
 import ast
 import collections
 import re
+from slugify import slugify
 # Create your models here.
 
 
@@ -992,7 +993,7 @@ class Game(models.Model):
                 g = Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).order_by('-pub_date').first()
                 image = g.images.first()
             if image:
-                news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self)
+                news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self, slug=slugify(title))
                 news.save()
         else:
             self.used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
