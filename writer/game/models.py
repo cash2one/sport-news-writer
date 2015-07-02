@@ -623,8 +623,7 @@ class Game(models.Model):
 
     def urcare(self):
         urcare = []
-        first_id = Game.objects.filter(campionat=self.campionat).first().id
-        if self.id > first_id:
+        if self.team1.etape(self.id) > 7:
             for team in [self.team1, self.team2]:
                 if team.loc(self.id) < team.loc_prev(self.id):
                     loc = team.loc(self.id)
@@ -638,8 +637,7 @@ class Game(models.Model):
 
     def coborire(self):
         coborire = []
-        first_id = Game.objects.filter(campionat=self.campionat).first().id
-        if self.id > first_id:
+        if self.team1.etape(self.id) > 7:
             for team in [self.team1, self.team2]:
                 if team.loc(self.id) > team.loc_prev(self.id):
                     loc = team.loc(self.id)
@@ -744,11 +742,7 @@ class Game(models.Model):
     # Templates #
     #############
     def title_frase(self, debug=False, begin=False):
-        used = ast.literal_eval(self.used_frases)
-        exclude = Q()
-        if begin:
-            exclude = Q(id=used['title'])
-        first_id = Game.objects.filter(campionat=self.campionat).first().id
+        exclude = Q(id=self.used['title'])
         not_null = Q(title__isnull=False)
         diff = Q(min_score_diference__lte=self.score_diference()) & Q(max_score_diference__gte=self.score_diference())
         diff_null = Q(min_score_diference__isnull=True) & Q(max_score_diference__isnull=True)
@@ -766,10 +760,9 @@ class Game(models.Model):
         if self.winer():
             wins = self.winer().wining_trend(self.id)
             if self.winer().wining_trend(self.id) >= 4:
-                print '__________________', "We have wining trend!!!"
                 win_set = Q(win_ser=True)
                 sets = [win_set]
-            if self.id > first_id + 39:
+            if self.team1.etape(self.id) > 7:
                 if self.winer().loc(self.id) == 1:
                     sets.append(Q(with_champion=True))
         if self.loser():
@@ -777,7 +770,7 @@ class Game(models.Model):
             if self.loser().lose_trend(self.id) >= 3:
                 lose_set = Q(lose_ser=True)
                 sets = [lose_set]
-            if self.id > first_id + 39:
+            if self.team1.etape(self.id) > 7:
                 if self.loser().loc_prev(self.id) == 1:
                     sets.append(Q(with_champion=False))
 
@@ -794,15 +787,12 @@ class Game(models.Model):
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'game': self, 'wins': wins, 'loses': loses}))
         if not begin:
-            used['title'] = frase.id
+            self.used['title'] = frase.id
         else:
-            used['begin'] = frase.id
-        self.used_frases = str(used)
-        self.save()
+            self.used['begin'] = frase.id
         return ret
 
     def first_goal_frase(self, debug=False):
-        used = ast.literal_eval(self.used_frases)
         args = Q()
         args &= Q(only=self.only())
         args &= Q(min_minute__lte=self.goals.all()[0].minute)
@@ -814,16 +804,40 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'game': self,}))
-        used['first'] = frase.id
-        self.used_frases = str(used)
-        self.save()
+        self.used['first'] = frase.id
         return ret
 
+    def group_goals_frase(self, group, i, total, debug=False):
+        reg_goals = ''
+        if i == 0:
+            group.pop(0)
+        if i == total - 1:
+            group = group[:-1]
+        if len(group) > 1:
+            authors = collections.OrderedDict()
+            for goal in group:
+                cg = authors.get(goal.author.name, [])
+                authors[goal.author.name] = cg + [str(goal.minute)]
+            goals = list_authors(authors)
+            if i == 0:
+                first = True
+            else:
+                first = False
+            frase = random.sample(GoalGroupFrase.objects.filter(first=first).exclude(id__in=self.used['group']).all(), 1)[0]
+            goal_group_frase = Template(frase.title)
+            team = group[0].team
+            recipient = group[0].recipient
+            score = group[-1].score()
+            reg_goals += goal_group_frase.render(Context({
+                'team': team, 'recipient': recipient, 'score': score, 'authors': goals}))
+            self.used['group'].append(frase.id)
+        elif len(group) == 1:
+            reg_goals += ' %s' % self.regular_goal_frase(group[0], debug)
+        return reg_goals
+
     def regular_goal_frase(self, goal, debug=False):
-        used = ast.literal_eval(self.used_frases)
         exclude = Q()
-        if used['regular']:
-            exclude = Q(id__in=used['regular'])
+        exclude = Q(id__in=self.used['regular'])
         args = Q()
         if goal.only() and goal.equal():
             args &= Q(only=goal.only())
@@ -839,13 +853,10 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'goal': goal,}))
-        used['regular'].append(frase.id)
-        self.used_frases = str(used)
-        self.save()
+        self.used['regular'].append(frase.id)
         return ret
 
     def last_goal_frase(self, debug=False):
-        used = ast.literal_eval(self.used_frases)
         last_goal = self.goals.last()
         scor_list = self.scor_list()
         pre_last_scor = scor_list[len(scor_list) - 2]
@@ -869,13 +880,10 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'game': self, 'goal': last_goal}))
-        used['last'] = frase.id
-        self.used_frases = str(used)
-        self.save()
+        self.used['last'] = frase.id
         return ret
 
     def conclusion(self, debug=False):
-        used = ast.literal_eval(self.used_frases)
         args = Q()
         args &= Q(urcare=(self.urcare() is not False))
         args &= Q(coborire=(self.coborire() is not False))
@@ -906,15 +914,14 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context(var))
-        used['conclusion'] = frase.id
-        self.used_frases = str(used)
-        self.save()
+        self.used['conclusion'] = frase.id
         return ret
 
     ###############
     # Making news #
     ###############
     def start(self):
+        self.used = ast.literal_eval(self.used_frases)
         self.team1.host = True
         for team in [self.team1, self.team2]:
             if team.etape(self.id) > 7:
@@ -926,6 +933,8 @@ class Game(models.Model):
             team.save()
 
     def stop(self):
+        self.used_frases = str(self.used)
+        self.save()
         Synonims.objects.all().update(used=None)
         for team in [self.team1, self.team2]:
             team.host = False
@@ -934,9 +943,9 @@ class Game(models.Model):
             team.action = ''
             team.save()
 
-    def news(self, debug=False):
+    def news(self, debug=False, regenerate=False):
         self.start()
-        title = self.title_frase()
+        title = self.title_frase(debug)
         begin_frase = self.title_frase(debug, begin=True)
         if self.lupta_loc():
             begin_frase += u' În această seară cele două echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
@@ -945,34 +954,9 @@ class Game(models.Model):
             first_goal_frase = self.first_goal_frase(debug)
         reg_goals = ''
         if self.goals.count() > 2:
-            for i, group in enumerate(self.goals_set()):
-                if i == 0:
-                    group.pop(0)
-                if i == len(self.goals_set()) - 1:
-                    group = group[:-1]
-                if len(group) > 1:
-                    authors = collections.OrderedDict()
-                    for goal in group:
-                        cg = authors.get(goal.author.name, [])
-                        authors[goal.author.name] = cg + [str(goal.minute)]
-                    goals = list_authors(authors)
-                    if i == 0:
-                        first = True
-                    else:
-                        first = False
-                    used = ast.literal_eval(self.used_frases)
-                    frase = random.sample(GoalGroupFrase.objects.filter(first=first).exclude(id__in=used['group']).all(), 1)[0]
-                    goal_group_frase = Template(frase.title)
-                    team = group[0].team
-                    recipient = group[0].recipient
-                    score = group[-1].score()
-                    reg_goals += goal_group_frase.render(Context({
-                        'team': team, 'recipient': recipient, 'score': score, 'authors': goals}))
-                    used['group'].append(frase.id)
-                    self.used_frases = str(used)
-                    self.save()
-                elif len(group) == 1:
-                    reg_goals += ' %s' % self.regular_goal_frase(group[0], debug)
+            goals_set = self.goals_set()
+            for i, group in enumerate(goals_set):
+                reg_goals += self.group_goals_frase(group, i, len(goals_set), debug)
         last_goal_frase = ''
         if self.goals.count() > 1:
             last_goal_frase = self.last_goal_frase(debug)
@@ -996,7 +980,7 @@ class Game(models.Model):
                 news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self, slug=slugify(title))
                 news.save()
         else:
-            self.used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
+            self.used = {"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}
             self.save()
         self.stop()
         return title, news_text
