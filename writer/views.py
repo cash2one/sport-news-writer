@@ -202,8 +202,12 @@ def collect_video_game(game, live=False, test=False):
     return 'ok'
 
 
-def base(request):
-    news_list = News.objects.order_by('-pub_date')
+def base(request, campionat=None):
+    args = Q()
+    if campionat:
+        campionat_item = Campionat.objects.get(slug=campionat)
+        args &= Q(game__campionat=campionat_item)
+    news_list = News.objects.filter(args).order_by('-pub_date')
     paginator = Paginator(news_list, 10)
 
     page = request.GET.get('page', 1)
