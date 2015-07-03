@@ -140,7 +140,22 @@ def collect_all():
     return 'ok'
 
 
-def collect_video_game(game, live=False, test=False):
+def collect_video_game(game, live=False, test=False, only_video=False):
+    black_list = ['UCOIJLZuKMOZB8dsuAyRF-zg', 'UCOjl_Kyky0OHv7ToYpyKiZw',
+                  'UCMmVPVb0BwSIOWVeDwlPocQ', 'UC76VPTjEuP011r66am5FhFg',
+                  'UC30avO2n6knAFiH2c8e4qiw', 'UCP4A2nemKn_Gmd4ODKQkmvA',
+                  'UCZe0ebzwxepnz-AmNxltuFw', 'UCQfA_UR-QfDcyt7F0vLYJ-g',
+                  'UCSVkHOXzVRt2ILUMu45cXvA', 'UC3cgAea0Rr9DfTG5Zgmfo2A',
+                  'UCUZPb4VLzXFLJomBap2faUA', 'UCXwTR89dy_ohV4ZMoSVcc7A',
+                  'UCeXqv6GZCX-jZr-IcDCpBXQ', 'UCmJV9Z99_hfCyM2WyGfOHvA',
+                  'UCBFar-sN-5f2JROgLV8WL7w', 'UCgZ17coJyBA37IsG-TvcfOA',
+                  'UCQzY_fLOEVc36TDy0FI9MVA', 'UCN9hj6XnMycvcIkr1ppEViQ',
+                  'UC8Zq4iGiOnbIGLL5QuHIqTA', 'UChBVxoOjAKedPvqX_4NVgtQ',
+                  'UCCs93usjv27jdOzjgRkrNIw', 'UCxvXjfiIHQ2O6saVx_ZFqnw',
+                  'UCZRtjNx9fy3kbG2LD_n_3Lg', 'UCQGQbGSSfA-P4UR7VejOFNA',
+                  'UCqVINbDs614iiH9HTY5NIEg', 'UCb48BM_JsYnBjBPfmg8AeXA',
+                  'UCxyJrhTHuoyXAI4OzBYyiWA',
+                  ]
     delta = datetime.timedelta(120)
     if live:
         delta = datetime.timedelta(24)
@@ -154,7 +169,7 @@ def collect_video_game(game, live=False, test=False):
     kwargs = {}
     if live:
         kwargs['videoDuration'] = 'long'
-        kwargs['q'] = 'stream %s %s' % (game.team1.title, game.team2.title)
+        kwargs['q'] = '%s %s' % (game.team1.title, game.team2.title)
         kwargs['eventType'] = 'completed'
     else:
         kwargs['q'] = 'Highlights %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)
@@ -165,9 +180,11 @@ def collect_video_game(game, live=False, test=False):
     kwargs['publishedAfter'] = begin_date
     kwargs['publishedBefore'] = end_date
     kwargs['videoEmbeddable'] = "true"
+    kwargs['videoSyndicated'] = "true"
     search_response = youtube.search().list(**kwargs).execute()
 
     for search_result in search_response.get("items", []):
+        print 'Channel id', search_result['snippet']['channelId']
         title = unidecode(search_result['snippet']['title'])
         match = True
         saved = False
@@ -184,19 +201,21 @@ def collect_video_game(game, live=False, test=False):
             thumbs = video['snippet']['thumbnails']
             image_url = thumbs['high']['url']
             if not test:
-                photo = Photo(title=title)
-                name = urlparse(image_url).path.split('/')[-1]
-                content = urllib.urlretrieve(image_url)
-                photo.image.save(name, File(open(content[0])), save=True)
+                if not only_video:
+                    photo = Photo(title=title)
+                    name = urlparse(image_url).path.split('/')[-1]
+                    content = urllib.urlretrieve(image_url)
+                    photo.image.save(name, File(open(content[0])), save=True)
+                    game.images.add(photo)
                 player = video['player']['embedHtml']
-                game.images.add(photo)
-                if not live and not saved:
-                    game.video = player
-                    saved = True
-                elif not saved:
-                    game.live = player
-                    saved = True
-                game.save()
+                if search_result['snippet']['channelId'] not in black_list:
+                    if not live and not saved:
+                        game.video = player
+                        saved = True
+                    elif not saved:
+                        game.live = player
+                        saved = True
+                    game.save()
             else:
                 print title
     return 'ok'
@@ -209,6 +228,9 @@ def base(request, campionat=None):
         campionat_item = Campionat.objects.get(slug=campionat)
         news_args &= Q(game__campionat=campionat_item)
         games_args &= Q(campionat=campionat_item)
+    live = request.GET.get('live', False)
+    if live:
+        news_args &= Q(game__live__isnull=False)
     last_game = Game.objects.filter(games_args).order_by('-pub_date').first()
     games_args &= Q(pub_date=last_game.pub_date)
     game_list = Game.objects.filter(games_args).order_by('-id')

@@ -107,10 +107,15 @@ class Player(models.Model):
     goals_total = models.IntegerField(default=0)
     #: The nationality of player (will be used in making sinonims of his name
     nationality = models.CharField(max_length=128, blank=True, null=True)
+    #: A list of fotos of player
+    photos = models.ManyToManyField(Photo, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
-admin.site.register(Player)
+
+class PlayerAdmin(admin.ModelAdmin):
+    list_display = ['name', 'goals_total']
+admin.site.register(Player, PlayerAdmin)
 
 
 class Couch(models.Model):
