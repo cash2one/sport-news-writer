@@ -170,6 +170,7 @@ def collect_video_game(game, live=False, test=False):
     for search_result in search_response.get("items", []):
         title = unidecode(search_result['snippet']['title'])
         match = True
+        saved = False
         for word in kwargs['q'].split(' '):
             if word not in title:
                 match = False
@@ -189,12 +190,13 @@ def collect_video_game(game, live=False, test=False):
                 photo.image.save(name, File(open(content[0])), save=True)
                 player = video['player']['embedHtml']
                 game.images.add(photo)
-                if not live:
+                if not live and not saved:
                     game.video = player
-                else:
+                    saved = True
+                elif not saved:
                     game.live = player
+                    saved = True
                 game.save()
-                break
             else:
                 print title
     return 'ok'
