@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'writer.game',
     'gunicorn',
     'bootstrap_pagination',
+    'sorl.thumbnail',
 )
 
 MIDDLEWARE_CLASSES = (

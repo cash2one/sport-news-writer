@@ -203,18 +203,28 @@ def collect_video_game(game, live=False, test=False):
 
 
 def base(request, campionat=None):
-    args = Q()
+    news_args = Q()
+    games_args = Q()
     if campionat:
         campionat_item = Campionat.objects.get(slug=campionat)
-        args &= Q(game__campionat=campionat_item)
-    news_list = News.objects.filter(args).order_by('-pub_date')
+        news_args &= Q(game__campionat=campionat_item)
+        games_args &= Q(campionat=campionat_item)
+    last_game = Game.objects.filter(games_args).order_by('-pub_date').first()
+    games_args &= Q(pub_date=last_game.pub_date)
+    game_list = Game.objects.filter(games_args).order_by('-id')
+    image_list = []
+    for game in game_list:
+        for image in game.images.all():
+            image_list.append(image)
+    news_list = News.objects.filter(news_args).order_by('-pub_date')
     paginator = Paginator(news_list, 10)
 
     page = request.GET.get('page', 1)
     newses = paginator.page(page)
     campionat_list = Campionat.objects.all()
     return render(request, 'index.html',
-                  {'news_list': newses, 'campionat_list': campionat_list})
+                  {'news_list': newses, 'campionat_list': campionat_list,
+                   'game_list': game_list, 'image_list': image_list})
 
 
 def news(request, campionat=None, title=None):
@@ -224,13 +234,3 @@ def news(request, campionat=None, title=None):
                   {'news_item': news_item, 'campionat_list': campionat_list})
 
 
-def campionat(request, campionat=None):
-    campionat_item = Campionat.objects.get(slug=campionat)
-    news_list = News.objects.filter(game__campionat=campionat_item).order_by('-pub_date')
-    campionat_list = Campionat.objects.all()
-    paginator = Paginator(news_list, 10)
-
-    page = request.GET.get('page', 1)
-    newses = paginator.page(page)
-    return render(request, 'index.html',
-                  {'news_list': newses, 'campionat_list': campionat_list})

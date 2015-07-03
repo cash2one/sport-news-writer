@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ro">
 {% load bootstrap_pagination %}
+{% load thumbnail %}
     
     <head>
         <title>Sport-Express.US</title>
@@ -231,45 +232,23 @@
                 <!-- FIXTURE SLIDER -->
                 <section class="transparent-bg">
                     <div id="fixture">
-                        <div class="slide-content">
-                            <div class="match-results">
-                                <span>Voluptate Cillum FC</span>
-                                <span class="score">? - ?</span>
-                                <span>Deserunt Quorum FC</span>
+                        {% for game in game_list %}
+                            <div class="slide-content">
+                                <div class="match-results">
+                                    <span>{{ game.team1 }}</span>
+                                    <span class="score">{{ game.goal_team1 }} - {{ game.goal_team2 }}</span>
+                                    <span>{{ game.team2 }}</span>
+                                </div>
+                                <div class="match-place">
+                                    <span>{{ game.pub_date }}</span>
+                                    {% if game.news_set.first %}
+                                        <span class="red">
+                                            <a href="{% url 'news' game.campionat.slug game.news_set.first.slug %}">Rezumat</a>
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <div class="match-place">
-                                <span>11th Mar 2014 - 10:00 PM at Quamquam Stadium</span>
-                                <span class="red">
-                                    <a href="fixtures.html">Buy Ticket</a>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="slide-content">
-                            <div class="match-results">
-                                <span>Deserunt Quorum FC</span>
-                                <span class="score">2 - 1</span>
-                                <span>Voluptate Cillum FC</span>
-                            </div>
-                            <div class="match-place">
-                                <span>07th Mar 2014 - 11:00 PM at Suspendisse Stadium</span>
-                                <span class="red">
-                                    <a href="result.html">Report</a>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="slide-content">
-                            <div class="match-results">
-                                <span>Voluptate Cillum FC</span>
-                                <span class="score">1 - 3</span>
-                                <span>Deserunt Quorum FC</span>
-                            </div>
-                            <div class="match-place">
-                                <span>03th Mar 2014 - 09:00 PM at Quamquam Stadium</span>
-                                <span class="red">
-                                    <a href="result.html">Report</a>
-                                </span>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                     <div class="clear"></div>
                 </section>
@@ -400,40 +379,19 @@
                     <!-- SIDEBAR BOX -->
                     <div class="sidebarbox">
                         <div class="sidebarbox-title">
-                            <h3>Gallery</h3>
+                            <h3>Galerie foto</h3>
                         </div>
                         <!-- GALLERY -->
                         <ul class="team-gallery">
-                            <li>
-                                <a class="clb-photo" href="images/photos/l1.jpg">
-                                    <img src="images/photos/s1.jpg" alt="" />
-                                </a>
-                            </li>
-                            <li>
-                                <a class="clb-iframe" href="http://www.youtube.com/embed/1iIZeIy7TqM">
-                                    <img src="images/photos/t1.jpg" alt="" />
-                                </a>
-                            </li>
-                            <li>
-                                <a class="clb-photo" href="images/photos/l2.jpg">
-                                    <img src="images/photos/s2.jpg" alt="" />
-                                </a>
-                            </li>
-                            <li>
-                                <a class="clb-iframe" href="http://www.dailymotion.com/embed/video/x143vp2">
-                                    <img src="images/photos/t2.jpg" alt="" />
-                                </a>
-                            </li>
-                            <li>
-                                <a class="clb-photo" href="images/photos/l3.jpg">
-                                    <img src="images/photos/s3.jpg" alt="" />
-                                </a>
-                            </li>
-                            <li>
-                                <a class="clb-link" href="http://www.themeforest.com">
-                                    <img src="images/photos/t3.jpg" alt="" />
-                                </a>
-                            </li>
+                            {% for image in image_list %}
+                                <li>
+                                    <a class="clb-photo" href="{{ image.image.url }}">
+                                        {% thumbnail image.image "360x360" crop="center" as im %}
+                                            <img src="{{ im.url }}" alt="{{ image.title }}" />
+                                        {% endthumbnail %}
+                                    </a>
+                                </li>
+                            {% endfor %}
                         </ul>
                         <a href="galleries.html" class="button button-widget">View All</a>
                     </div>
@@ -477,23 +435,13 @@
                 <div id="footer-widgets">
                     <!-- WIDGET 1 -->
                     <div class="footer-widget first-clmn">
-                        <h5>Recent Posts</h5>
+                        <h5>Ştiri recente</h5>
                         <ul>
-                            <li>
-                                <a href="blog.html">Suspendisse ipsum urna</a>
-                            </li>
-                            <li>
-                                <a href="blog.html">Pellentesque eget por</a>
-                            </li>
-                            <li>
-                                <a href="blog.html">Aliquam sit amet urne</a>
-                            </li>
-                            <li>
-                                <a href="blog.html">Ornare dapibus ornare et</a>
-                            </li>
-                            <li>
-                                <a href="blog.html">Donec et odio et amet</a>
-                            </li>
+                            {% for news in news_list %}
+                                <li>
+                                    <a href="{% url 'news' news.game.campionat.slug news.slug %}">{{ news }}</a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </div>
                     <!-- WIDGET 2 -->
@@ -527,7 +475,7 @@
                 </div>
                 <div class="clear"></div>
                 <!-- COPYRIGHT -->
-                <div class="credits">Copyright Egemenerd</div>
+                <div class="credits">Copyright &copy;Sport-Express.MD 2015</div>
                 <!-- SOCIAL ICONS -->
                 <ul class="social-icons">
                     <li>
@@ -542,27 +490,7 @@
                     </li>
                     <li>
                         <a href="index.html#">
-                            <img class="social-icon" src="images/social-icons/flickr.png" alt="Flickr" />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="index.html#">
-                            <img class="social-icon" src="images/social-icons/linkedin.png" alt="Linked in" />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="index.html#">
                             <img class="social-icon" src="images/social-icons/google+.png" alt="Google+" />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="index.html#">
-                            <img class="social-icon" src="images/social-icons/vimeo.png" alt="Vimeo" />
-                        </a>
-                    </li>
-                    <li>
-                        <a href="index.html#">
-                            <img class="social-icon" src="images/social-icons/youtube.png" alt="YouTube" />
                         </a>
                     </li>
                 </ul>
