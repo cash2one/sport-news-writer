@@ -92,6 +92,10 @@ class Campionat(models.Model):
 
     def __unicode__(self):
         return self.country
+
+    def clasament(self):
+        return self.game_set.first().render_clasament()
+
 admin.site.register(Campionat)
 
 
@@ -292,7 +296,7 @@ class Team(models.Model):
         args = Q(team1=self)
         args |= Q(team2=self)
         if not last_id:
-            last_id = Game.objects.last().id
+            last_id = Game.objects.first().id
         args &= Q(id__lte=last_id)
         wins = 0
         for game in Game.objects.filter(args).order_by('-id'):
@@ -306,7 +310,7 @@ class Team(models.Model):
         args = Q(team1=self)
         args |= Q(team2=self)
         if not last_id:
-            last_id = Game.objects.last().id
+            last_id = Game.objects.first().id
         args &= Q(id__lte=last_id)
         wins = 0
         for game in Game.objects.filter(args).order_by('-id'):
@@ -323,7 +327,7 @@ class Team(models.Model):
         args = Q(team1=self)
         args |= Q(team2=self)
         if not last_id:
-            last_id = Game.objects.last().id
+            last_id = Game.objects.first().id
         args &= Q(id__lte=last_id)
         lose = 0
         for game in Game.objects.filter(args).order_by('-id'):
@@ -337,7 +341,7 @@ class Team(models.Model):
         args = Q(team1=self)
         args |= Q(team2=self)
         if not last_id:
-            last_id = Game.objects.last().id
+            last_id = Game.objects.first().id
         ref_game = Game.objects.get(id=last_id)
         season = ref_game.season
         args &= Q(season=season)
@@ -355,9 +359,9 @@ class Team(models.Model):
     def loc(self, last_id=None):
         loc = -1
         if not last_id:
-            last_id = Game.objects.last().id
+            last_id = Game.objects.first().id
         args = Q(id__lte=last_id) & Q(campionat=self.campionat)
-        game = Game.objects.filter(args).last()
+        game = Game.objects.filter(args).first()
         clasament = game.clasament()
         for i, element in enumerate(clasament):
             if element[1] == self.id:
@@ -366,7 +370,7 @@ class Team(models.Model):
 
     def loc_prev(self, last_id=None):
         if not last_id:
-            last_id = Game.objects.last().id
+            last_id = Game.objects.first().id
         if last_id:
             return self.loc(last_id - 1)
         return None
@@ -381,7 +385,7 @@ class Team(models.Model):
         :rtype: tuple
         """
         if not last_id:
-            last_id = Game.objects.last().id
+            last_id = Game.objects.first().id
         game = Game.objects.get(id=last_id)
         clasament = game.clasament()
         loc = self.loc()
@@ -575,6 +579,7 @@ class Game(models.Model):
     goals = models.ManyToManyField(Goal, blank=True, null=True)
     url = models.CharField(max_length=512, blank=True, null=True)
     classament = models.TextField(blank=True, null=True)
+    classament_rendered = models.TextField(blank=True, null=True)
     season = models.ForeignKey(Season, default=get_season)
     images = models.ManyToManyField(Photo, blank=True)
     video = models.TextField(blank=True, null=True)
@@ -586,6 +591,7 @@ class Game(models.Model):
             ['pub_date', 'campionat'],
             ['pub_date', 'campionat', 'season'],
         ]
+        ordering = ['-pub_date', '-id']
 
     def __unicode__(self):
         return self.team1.title + ' ' + str(self.goal_team1) + ':' + str(self.goal_team2) + ' ' + self.team2.title
@@ -614,6 +620,55 @@ class Game(models.Model):
                 return True
         return False
 
+    def render_clasament(self):
+        """
+        This method will render the clasament.
+        """
+        if self.classament_rendered:
+            return ast.literal_eval(self.classament_rendered)
+        clasament = self.clasament()
+        res = []
+        for row in clasament:
+            (points, team_id) = row
+            team = Team.objects.get(id=team_id)
+            count = 0
+            wins = 0
+            loses = 0
+            equals = 0
+            goals_in = 0
+            goals_out = 0
+            for game in Game.objects.filter(
+                Q(pub_date__lte=self.pub_date) & Q(id__lte=self.id) &
+                (Q(team1=team) | Q(team2=team))
+            ).all():
+                count += 1
+                if game.winer() == team:
+                    wins += 1
+                elif game.loser() == team:
+                    loses += 1
+                else:
+                    equals += 1
+                if game.team1 == team:
+                    goals_out += game.goal_team1
+                    goals_in += game.goal_team2
+                else:
+                    goals_in += game.goal_team1
+                    goals_out += game.goal_team2
+            res.append({
+                'campionat': self.campionat.title,
+                'pub_date': self.pub_date.strftime('%d.%m.%Y'),
+                'team': team.title,
+                'points': points,
+                'goals_in': goals_in,
+                'goals_out': goals_out,
+                'wins': wins,
+                'loses': loses,
+                'equals': equals
+            })
+        self.classament_rendered = str(res)
+        self.save()
+        return res
+
     def clasament(self):
         if not self.classament or len(self.classament) < 10:
             clasament = []
@@ -632,7 +687,7 @@ class Game(models.Model):
             for team in [self.team1, self.team2]:
                 if team.loc(self.id) < team.loc_prev(self.id):
                     loc = team.loc(self.id)
-                    prev_game = Game.objects.filter(Q(campionat=self.campionat) & Q(id__lt=self.id)).last()
+                    prev_game = Game.objects.filter(Q(campionat=self.campionat) & Q(id__lt=self.id)).first()
                     declasat_id = prev_game.clasament()[loc - 1][1]
                     declasat = Team.objects.get(id=declasat_id)
                     urcare.append([team, loc, team.points(self.id), declasat, declasat.points(self.id), declasat.loc(self.id)])
@@ -646,7 +701,7 @@ class Game(models.Model):
             for team in [self.team1, self.team2]:
                 if team.loc(self.id) > team.loc_prev(self.id):
                     loc = team.loc(self.id)
-                    prev_game = Game.objects.filter(Q(campionat=self.campionat) & Q(id__lt=self.id)).last()
+                    prev_game = Game.objects.filter(Q(campionat=self.campionat) & Q(id__lt=self.id)).first()
                     supraclasat_id = prev_game.clasament()[loc - 1][1]
                     supraclasat = Team.objects.get(id=supraclasat_id)
                     coborire.append([team, loc, team.points(self.id), supraclasat, supraclasat.points(self.id), supraclasat.loc(self.id)])
@@ -952,7 +1007,7 @@ class Game(models.Model):
         if self.images.count():
             return random.sample(self.images.all(), 1)[0]
         elif Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).count():
-            g = Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).order_by('-pub_date').first()
+            g = Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).first()
             return random.sample(g.images.all(), 1)[0]
         elif Photo.objects.filter(player__goal__game=self).count():
             return random.sample(Photo.objects.filter(player__goal__game=self).all(), 1)[0]

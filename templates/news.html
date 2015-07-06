@@ -11,7 +11,12 @@
 {% block content %}
                     <article>
                         <!-- POST DATE -->
-                        <div class="blogpostdate">{{ news.pub_date }}</div> 
+                        <div class="blogpostdate">{{ news_item.pub_date }}</div> 
+                        <div class="match-results">
+                            <span>{{ news_item.game.team1 }}</span>
+                            <span class="score">{{ news_item.game.goal_team1 }} - {{ news_item.game.goal_team2 }}</span>
+                            <span>{{ news_item.game.team2 }}</span>
+                        </div>
                         {{ news_item.text|safe }}
                         {% if news_item.game.live %}
                             <h3>LIVE:</h3>
@@ -48,4 +53,6 @@
                         {% endif %}
                     </article>
                     <hr/>
+{% endblock %}
+{% block sidebar %}
 {% endblock %}

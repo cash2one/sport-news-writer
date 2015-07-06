@@ -264,6 +264,7 @@ def base(request, campionat=None):
         campionat_item = Campionat.objects.get(slug=campionat)
         news_args &= Q(game__campionat=campionat_item)
         games_args &= Q(campionat=campionat_item)
+        clasament_list = [campionat_item.clasament()]
     live = request.GET.get('live', False)
     if live:
         news_args &= Q(game__live__isnull=False)
@@ -280,15 +281,24 @@ def base(request, campionat=None):
     page = request.GET.get('page', 1)
     newses = paginator.page(page)
     campionat_list = Campionat.objects.all()
+    if not campionat:
+        clasament_list = []
+        for campionat in campionat_list:
+            clasament_list.append(campionat.clasament())
     return render(request, 'index.html',
                   {'news_list': newses, 'campionat_list': campionat_list,
-                   'game_list': game_list, 'image_list': image_list})
+                   'game_list': game_list, 'image_list': image_list,
+                   'clasament_list': clasament_list})
 
 
 def news(request, campionat=None, title=None):
     news_item = News.objects.filter(game__campionat__slug=campionat, slug=title).first()
     campionat_list = Campionat.objects.all()
+    clasament_list = [news_item.game.render_clasament()]
+    if news_item.game != news_item.game.campionat.game_set.first():
+        clasament_list.append(news_item.game.campionat.clasament())
     return render(request, 'news.html',
-                  {'news_item': news_item, 'campionat_list': campionat_list})
+                  {'news_item': news_item, 'campionat_list': campionat_list,
+                   'clasament_list': clasament_list})
 
 

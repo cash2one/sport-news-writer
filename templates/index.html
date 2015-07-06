@@ -51,6 +51,13 @@
             .blogpager ul li.disabled a, .blogpager ul li.active a {
                 color: #999;
             }
+            .table.clasament {
+                width: 100%;
+                text-align: center;
+            }
+            .table.clasament tbody tr:nth-child(odd) {
+                   background-color: #efefef;
+            }
         </style>
     </head>
     
@@ -80,134 +87,6 @@
             </div>
         </header>
         <div class="clear"></div>
-        <!-- MAIN MENU -->
-        <section id="mainmenu-container">
-            <a class="toggleMenu" href="index.html#">Menu</a>
-            <nav>
-                <ul id="mainmenu">
-                    <li>
-                        <a href="index.html">
-                            <span>Homepage</span>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="index.html">
-                                    <span>Flexslider</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index2.html">
-                                    <span>You Tube TV</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="index.html#">
-                            <span>Pages</span>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="club.html">
-                                    <span>Our Club</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="team.html">
-                                    <span>Our Team</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="features.html">
-                                    <span>Features</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="layout.html">
-                                    <span>Layout</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="fixtures.html">
-                                    <span>Fixtures</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="result.html">
-                                    <span>Match Result</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="index.html#">
-                                    <span>Dropdown</span>
-                                </a>
-                                <ul>
-                                    <li>
-                                        <a href="index.html#">
-                                            <span>Item 1</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="index.html#">
-                                            <span>Item 2</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="index.html#">
-                                            <span>Item 3</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="index.html#">
-                                            <span>Item 4</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="galleries.html">
-                            <span>Gallery</span>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="galleries.html">
-                                    <span>Galleries</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="single-gallery.html">
-                                    <span>Single Gallery</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="blog.html">
-                            <span>Blog</span>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="blog.html">
-                                    <span>Blog</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="single-post.html">
-                                    <span>Single Post</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="contact.html">
-                            <span>Contact</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </section>
         <!-- MAIN CONTAINER -->
         <section class="maincontainer">
             {% block slider %}
@@ -218,13 +97,15 @@
                             <div id="slider" class="flexslider">
                                 <ul class="slides">
                                     {% for news in news_list %}
-                                        <li>
-                                            <div class="flex-title">
-                                                <h3>{{ news.game }}</h3>
-                                                <p>{{ news.title }}</p>
-                                            </div>
-                                            <img src="{{ news.photo.image.url }}" alt="" />
-                                        </li>
+                                        {% if news.photo.image.width > news.photo.image.height %}
+                                            <li>
+                                                <div class="flex-title">
+                                                    <h3>{{ news.game }}</h3>
+                                                    <p>{{ news.title }}</p>
+                                                </div>
+                                                <img src="{{ news.photo.image.url }}" alt="" />
+                                            </li>
+                                        {% endif %}
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -283,6 +164,7 @@
                             <h2>
                                 <a href="{% url 'news' news.game.campionat.slug news.slug %}">{% if news.game.live %}LIVE | {% endif %}{{ news.title }}</a>
                             </h2>
+                            <div class="blogpostdate">{{ news.pub_date }}</div> 
                             <p>{{ news.text|safe|truncatewords_html:20 }}
                                 <a href="/news/{{ news.id }}">Află mai mult...</a>
                             </p>
@@ -305,6 +187,41 @@
                             <input type="submit" class="button" name="submit" value="Go" />
                         </form>
                     </div>
+                    {% for clasament in clasament_list %}
+                        <div class="sidebarbox">
+                            <div class="sidebarbox-title">
+                                <h3>{{ clasament.0.campionat }}<br />
+                                    <small>{{ clasament.0.pub_date }}</small></h3>
+                            </div>
+                            <table class="table clasament">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Echipa</th>
+                                        <th>V</th>
+                                        <th>E</th>
+                                        <th>P</th>
+                                        <th>Goluri</th>
+                                        <th>Puncte</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for team in clasament %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ team.team }}</td>
+                                        <td>{{ team.wins }}</td>
+                                        <td>{{ team.equals }}</td>
+                                        <td>{{ team.loses }}</td>
+                                        <td>{{ team.goals_out }}-{{ team.goals_in }}</td>
+                                        <td>{{ team.points }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endfor %}
+                    {% block sidebar %}
                     <!-- SIDEBAR BOX -->
                     <div class="sidebarbox">
                         <h3>About Our Team</h3>
@@ -403,6 +320,7 @@
                         </ul>
                         <a href="galleries.html" class="button button-widget">View All</a>
                     </div>
+                    {% endblock %}
                 </section>
             </section>
             <div class="clear"></div>
