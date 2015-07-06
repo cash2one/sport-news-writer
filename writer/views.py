@@ -13,6 +13,9 @@ from django.core.files import File
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from time import sleep
+from django.template.loader import get_template
+from django.http import HttpResponse
+from django.template import Context
 
 
 DEVELOPER_KEY = "AIzaSyB0KMU3GZcwr5D-UqN46ZhlnjQLyNQwi20"
@@ -301,4 +304,10 @@ def news(request, campionat=None, title=None):
                   {'news_item': news_item, 'campionat_list': campionat_list,
                    'clasament_list': clasament_list})
 
+
+def rss(request):
+    article_list = News.objects.order_by('-pub_date')[0:30]
+    template = get_template('rss.xml')
+    return HttpResponse(template.render(Context(locals())),
+                        content_type="application/rss+xml")
 
