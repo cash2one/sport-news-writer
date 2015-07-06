@@ -33,6 +33,17 @@
                                         </a>
                                     </li>
                                 {% endfor %}
+                                {% for goal in news_item.game.goals.all %}
+                                    {% for image in goal.author.photos.all %}
+                                        <li data-filter="photos">
+                                            <a class="clb-photo" href="{{ image.image.url }}" data-rel="photos">
+                                            {% thumbnail image.image "360x360" crop="center" as im %}
+                                                <img src="{{ im.url }}" alt="{{ image.title }}" />
+                                            {% endthumbnail %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                {% endfor %}
                             </ul>
                         {% endif %}
                     </article>

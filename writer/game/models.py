@@ -59,7 +59,7 @@ class Photo(models.Model):
     image = models.ImageField(upload_to='images')
 
     def __unicode__(self):
-        return self.title
+        return str(self.id)
 
 admin.site.register(Photo)
 
@@ -948,6 +948,20 @@ class Game(models.Model):
             team.action = ''
             team.save()
 
+    def select_image(self):
+        if self.images.count():
+            return random.sample(self.images.all(), 1)[0]
+        elif Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).count():
+            g = Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).order_by('-pub_date').first()
+            return random.sample(g.images.all(), 1)[0]
+        elif Photo.objects.filter(player__goal__game=self).count():
+            return random.sample(Photo.objects.filter(player__goal__game=self).all(), 1)[0]
+        elif self.winer():
+            return random.sample(self.winer().photo.all(), 1)[0]
+        elif not self.winer():
+            return random.sample(self.team1.photo.all(), 1)[0]
+        return None
+
     def news(self, debug=False, regenerate=False):
         self.start()
         title = self.title_frase(debug)
@@ -975,12 +989,7 @@ class Game(models.Model):
                     """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
         news_text = typo(news_text)
         if not debug:
-            image = None
-            if self.images.first():
-                image = self.images.first()
-            elif Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).count():
-                g = Game.objects.filter((Q(team1=self.team1, team2=self.team2) | Q(team2=self.team1, team1=self.team2)) & Q(images__isnull=False)).order_by('-pub_date').first()
-                image = g.images.first()
+            image = self.select_image()
             if image:
                 news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self, slug=slugify(title))
                 news.save()

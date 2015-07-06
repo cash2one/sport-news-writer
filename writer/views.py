@@ -12,6 +12,7 @@ import urllib
 from django.core.files import File
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from time import sleep
 
 
 DEVELOPER_KEY = "AIzaSyB0KMU3GZcwr5D-UqN46ZhlnjQLyNQwi20"
@@ -140,6 +141,39 @@ def collect_all():
     return 'ok'
 
 
+
+def collect_photo(player=None, team=None):
+    if player:
+        goal = Goal.objects.filter(
+            Q(author=player) & Q(auto=False)
+        ).order_by('-id').first()
+        q = player.name + ' ' + goal.team.title + ' 2015'
+    elif team:
+        q = team.title + ' 2015'
+    cse = build("customsearch", "v1", developerKey=DEVELOPER_KEY)
+    res = cse.cse().list(
+        q = q,
+        imgSize = "large",
+        num = 10,
+        cx='008967187802311874018:z5qkxza9s1k',
+        searchType = "image"
+    ).execute()
+    for image in res['items']:
+        photo = Photo(title=image['title'])
+        name = urlparse(image['link']).path.split('/')[-1]
+        content = urllib.urlretrieve(image['link'])
+        photo.image.save(name, File(open(content[0])), save=True)
+        if player:
+            player.photos.add(photo)
+            player.save()
+        elif team:
+            team.photo.add(photo)
+            team.save()
+        print image['link']
+    sleep(1)
+    return res
+
+
 def collect_video_game(game, live=False, test=False, only_video=False):
     black_list = ['UCOIJLZuKMOZB8dsuAyRF-zg', 'UCOjl_Kyky0OHv7ToYpyKiZw',
                   'UCMmVPVb0BwSIOWVeDwlPocQ', 'UC76VPTjEuP011r66am5FhFg',
@@ -154,7 +188,9 @@ def collect_video_game(game, live=False, test=False, only_video=False):
                   'UCCs93usjv27jdOzjgRkrNIw', 'UCxvXjfiIHQ2O6saVx_ZFqnw',
                   'UCZRtjNx9fy3kbG2LD_n_3Lg', 'UCQGQbGSSfA-P4UR7VejOFNA',
                   'UCqVINbDs614iiH9HTY5NIEg', 'UCb48BM_JsYnBjBPfmg8AeXA',
-                  'UCxyJrhTHuoyXAI4OzBYyiWA',
+                  'UCxyJrhTHuoyXAI4OzBYyiWA', 'UCF47xaMexTCtm7rB3PJ0Rog',
+                  'UCcB4_90UmK6UaO46XpZtcHg', 'UCsERJiJi7rMBOgBH2GSJ69w',
+                  'UC6jxG2fVl1jztFI7ty3YwtQ', 'UClCNFzsgmgtf4IofCZHtW-Q'
                   ]
     delta = datetime.timedelta(120)
     if live:

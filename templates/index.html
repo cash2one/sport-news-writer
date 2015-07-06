@@ -17,6 +17,7 @@
         <link href="/static/css/normalize.css" rel="stylesheet" type="text/css">
         <link href="/static/css/animate.css" rel="stylesheet" type="text/css">
         <link href="/static/css/flexslider.css" rel="stylesheet" type="text/css" />
+        <link href="/static/css/grid.css" rel="stylesheet" type="text/css" />
         <link href="/static/css/style.css" rel="stylesheet" type="text/css">
         <link href="/static/css/colors.css" rel="stylesheet" type="text/css">
         <link href="/static/css/colorbox.css" rel="stylesheet" type="text/css">
@@ -212,18 +213,25 @@
             {% block slider %}
                 <!-- FLEXSLIDER -->
                 <section class="flex-wrapper">
-                    <div id="slider" class="flexslider">
-                        <ul class="slides">
-                            {% for news in news_list %}
-                                <li>
-                                    <div class="flex-title">
-                                        <h3>{{ news.game }}</h3>
-                                        <p>{{ news.title }}</p>
-                                    </div>
-                                    <img src="{{ news.photo.image.url }}" alt="" />
-                                </li>
-                            {% endfor %}
-                        </ul>
+                    <div class="grid">
+                        <div class="unit two-thirds" style="padding: 0;">
+                            <div id="slider" class="flexslider">
+                                <ul class="slides">
+                                    {% for news in news_list %}
+                                        <li>
+                                            <div class="flex-title">
+                                                <h3>{{ news.game }}</h3>
+                                                <p>{{ news.title }}</p>
+                                            </div>
+                                            <img src="{{ news.photo.image.url }}" alt="" />
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="unit one-third">
+                            <h3>Omul zilei</h3>
+                        </div>
                     </div>
                 </section>
                 <div class="clear"></div>
