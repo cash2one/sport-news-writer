@@ -1,0 +1,4 @@
+<br />
+<b>Warning</b>:  fopen(/home/soccenew/public_html/~hotlink-cache/wp-content/uploads/2014/05/Arturo Vidal Juventus FC v Citta di Palermo cfq4TJfGutrl.jpg): failed to open stream: No such file or directory in <b>/home/soccenew/public_html/byrev-wp-picshield.php</b> on line <b>312</b><br />
+<br />
+<b>Warning</b>:  fpassthru() expects parameter 1 to be resource, boolean given in <b>/home/soccenew/public_html/byrev-wp-picshield.php</b> on line <b>312</b><br />
