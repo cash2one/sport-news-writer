@@ -1,0 +1,19 @@
+{% load thumbnail %}
+<h3>Omul zilei: {{ hero.player }}</h3>
+{% thumbnail hero.player.random_image.image "360x240" as im %}
+    <img src="{{ im.url }}" alt="{{ im }}" />
+{% endthumbnail %}
+<p>Meciul: <a href="{% if hero.game.news_set.all %}{% url 'news' hero.game.campionat.slug hero.game.news_set.first.slug %}{% endif %}">{{ hero.game }}</a><br />
+{% if hero.data.goals %}
+    Goluri marcate: {{ hero.data.goals }}<br />
+{% endif %}
+{% if hero.data.assist %}
+    Assisturi: {{ hero.data.assist }}<br />
+{% endif %}
+{% if hero.data.victory %}
+    În acest meci {{ hero.player }} a adus {{ hero.game.winer.g }} victoria, marcând în minutul {{ hero.game.goals.last.minute }}.
+{% endif %}
+{% if hero.data.equal %}
+    {{ hero.player }} şi-a salvat echipa de la înfrângere, marcând golul egalizator din această seară în minutul {{ hero.game.goals.last.minute }}.
+{% endif %}
+</p>

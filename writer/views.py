@@ -5,11 +5,26 @@ from django.core.paginator import Paginator
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.template import Context
+import datetime
+
+
+def hero_of_the_day(day=datetime.date.today(), campionat=None):
+    args = Q(pub_date=day)
+    if campionat:
+        args &= Q(campionat=campionat)
+    game_list = Game.objects.filter(args).all()
+    hero = {'player': None, 'points': 0, 'data': None}
+    for game in game_list:
+        h = game.hero()
+        if h and (h['points'] > hero['points']):
+            hero = h
+    return hero
 
 
 def base(request, campionat=None):
     news_args = Q()
     games_args = Q()
+    campionat_item = None
     if campionat:
         campionat_item = Campionat.objects.get(slug=campionat)
         news_args &= Q(game__campionat=campionat_item)
@@ -35,10 +50,11 @@ def base(request, campionat=None):
         clasament_list = []
         for campionat in campionat_list:
             clasament_list.append(campionat.clasament())
+    hero = hero_of_the_day(day=last_game.pub_date, campionat=campionat_item)
     return render(request, 'index.html',
                   {'news_list': newses, 'campionat_list': campionat_list,
                    'game_list': game_list, 'image_list': image_list,
-                   'clasament_list': clasament_list})
+                   'clasament_list': clasament_list, 'hero': hero})
 
 
 def news(request, campionat=None, title=None):
@@ -47,7 +63,7 @@ def news(request, campionat=None, title=None):
     clasament_list = [news_item.game.render_clasament()]
     if news_item.game != news_item.game.campionat.game_set.first():
         clasament_list.append(news_item.game.campionat.clasament())
-    hero = news.game.hero()
+    hero = news_item.game.hero()
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list,
                    'clasament_list': clasament_list, 'hero': hero})

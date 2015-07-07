@@ -112,7 +112,7 @@
                             </div>
                         </div>
                         <div class="unit one-third">
-                            <h3>Omul zilei</h3>
+                            {% include 'hero_snippet.html' %}
                         </div>
                     </div>
                 </section>
@@ -167,7 +167,7 @@
                             </h2>
                             <div class="blogpostdate">{{ news.pub_date }}</div> 
                             <p>{{ news.text|safe|truncatewords_html:20 }}
-                                <a href="/news/{{ news.id }}">Află mai mult...</a>
+                                <a href="{% url 'news' news.game.campionat.slug news.slug %}">Află mai mult...</a>
                             </p>
                         </article>
                         <hr/>
@@ -229,78 +229,6 @@
                         <p>Elit cernantur in pariatur. Te illum de aute, a incididunt te pariatur. Vidisse aut tempor. Eu aut lorem cernantur, occaecat dolor mandaremus consequat. Do labore excepteur, dolor id admodum. Fabulas fugiat eiusmod incididunt. Si voluptate ita ullamco, iis minim incurreret voluptatibus an officia domesticarum nam cernantur est quis mentitum.
                             <a href="club.html">Read More...</a>
                         </p>
-                    </div>
-                    <!-- SIDEBAR BOX -->
-                    <div class="sidebarbox">
-                        <div class="sidebarbox-title">
-                            <h3>Fixture</h3>
-                        </div>
-                        <!-- TABLE -->
-                        <div class="fixture-row">
-                            <a href="result.html">
-                                <div class="fixture-row-left">Consectetur FC
-                                    <div>?</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>?</div>Voluptate Cillum FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Fabulas FC
-                                    <div>1</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>3</div>Voluptate Cillum FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Voluptate Cillum FC
-                                    <div>4</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>1</div>Vidisse FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Elit FC
-                                    <div>2</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>4</div>Voluptate Cillum FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Voluptate Cillum FC
-                                    <div>1</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>1</div>Domesticarum FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Ullamco FC
-                                    <div>6</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>1</div>Voluptate Cillum FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Incididunt FC
-                                    <div>1</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>5</div>Voluptate Cillum FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Voluptate Cillum FC
-                                    <div>2</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>1</div>Pariatur FC</div>
-                            </a>
-                            <a href="result.html">
-                                <div class="fixture-row-left">Voluptate Cillum FC
-                                    <div>1</div>
-                                </div>
-                                <div class="fixture-row-right">
-                                    <div>3</div>Mentitum FC</div>
-                            </a>
-                        </div>
                     </div>
                     <!-- SIDEBAR BOX -->
                     <div class="sidebarbox">
@@ -406,18 +334,18 @@
                 <!-- SOCIAL ICONS -->
                 <ul class="social-icons">
                     <li>
-                        <a href="index.html#">
-                            <img class="social-icon" src="images/social-icons/facebook.png" alt="Facebook" />
+                        <a href="#">
+                            <img class="social-icon" src="/static/images/social-icons/facebook.png" alt="Facebook" />
                         </a>
                     </li>
                     <li>
-                        <a href="index.html#">
-                            <img class="social-icon" src="images/social-icons/twitter.png" alt="Twitter" />
+                        <a href="#">
+                            <img class="social-icon" src="/static/images/social-icons/twitter.png" alt="Twitter" />
                         </a>
                     </li>
                     <li>
-                        <a href="index.html#">
-                            <img class="social-icon" src="images/social-icons/google+.png" alt="Google+" />
+                        <a href="#">
+                            <img class="social-icon" src="/static/images/social-icons/google+.png" alt="Google+" />
                         </a>
                     </li>
                 </ul>
