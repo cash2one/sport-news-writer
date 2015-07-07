@@ -515,6 +515,11 @@ class Goal(models.Model):
             return True
         return False
 
+    def egalizator(self):
+        if (self == self.game_set.first().goals.last()) and self.equal():
+            return True
+        return False
+
     def m(self):
         m = self.minute
         order = list(self.game_set.first().goals.all()).index(self)
@@ -603,11 +608,35 @@ class Game(models.Model):
         return str(self.goal_team1) + ':' + str(self.goal_team2)
 
     def hero(self):
+        dummy = {'goals': 0, 'assist': 0, 'victory': 0, 'equal': 0, 'auto': 0,
+                 'assist_victory': 0}
+        points = {}
         players = {}
         for goal in self.goals.all():
             player = players.get(goal.author, None)
+            assist = players.get(goal.assist, None)
             if not player:
-                pass
+                players[goal.author] = dummy.copy()
+            if (not assist) and goal.assist:
+                players[goal.assist] = dummy.copy()
+            if not goal.auto:
+                players[goal.author]['goals'] += 1
+                if goal.assist:
+                    players[goal.assist]['assist'] += 1
+            else:
+                players[goal.author]['auto'] += 1
+            if goal.victory() and not goal.auto:
+                players[goal.author]['victory'] += 1
+                if goal.assist:
+                    players[goal.assist]['assist_victory'] += 1
+            if goal.egalizator() and not goal.auto:
+                players[goal.author]['equal'] += 1
+                if goal.assist:
+                    players[goal.assist]['assist_victory'] += 1
+        for author in players:
+            points[author] = (players[author]['goals'] * 2) + players[author]['assist'] + (players[author]['victory'] * 4) + (players[author]['assist_victory'] * 2) + (players[author]['equal'] * 3) - (players[author]['auto'] * 3)
+        hero = sorted(points, key=points.get, reverse=True)[0]
+        return {'player': hero, 'points': points[hero], 'data': players[hero]}
 
     def class_difference(self):
         return abs(self.team1.points(self.id) - self.team2.points(self.id))
