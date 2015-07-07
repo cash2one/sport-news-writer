@@ -84,7 +84,7 @@ class Campionat(models.Model):
     #: the name of league
     title = models.CharField(max_length=128)
     #: slug pentru human readable urls
-    slug = models.CharField(max_length=160)
+    slug = models.CharField(max_length=160, db_index=True)
     #: the url on livescore for collecting games
     url = models.CharField(max_length=1024)
     #: the name of country where the championship is played
@@ -597,12 +597,17 @@ class Game(models.Model):
         return self.team1.title + ' ' + str(self.goal_team1) + ':' + str(self.goal_team2) + ' ' + self.team2.title
 
     ###########
-    #         #
     # Methods #
-    #         #
     ###########
     def score(self):
         return str(self.goal_team1) + ':' + str(self.goal_team2)
+
+    def hero(self):
+        players = {}
+        for goal in self.goals.all():
+            player = players.get(goal.author, None)
+            if not player:
+                pass
 
     def class_difference(self):
         return abs(self.team1.points(self.id) - self.team2.points(self.id))
@@ -1183,7 +1188,7 @@ admin.site.register(Conclusion)
 
 class News(models.Model):
     title = models.CharField(max_length=512)
-    slug = models.CharField(max_length=1024, blank=True, null=True)
+    slug = models.CharField(max_length=1024, blank=True, null=True, db_index=True)
     text = models.TextField()
     game = models.ForeignKey(Game)
     photo = models.ForeignKey(Photo, blank=True)

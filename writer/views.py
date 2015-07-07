@@ -305,9 +305,9 @@ def news(request, campionat=None, title=None):
                    'clasament_list': clasament_list})
 
 
-def rss(request):
+def rss(request, campionat=None):
+    args = Q()
     article_list = News.objects.order_by('-pub_date')[0:30]
     template = get_template('rss.xml')
     return HttpResponse(template.render(Context(locals())),
                         content_type="application/rss+xml")
-
