@@ -31,7 +31,7 @@ def collect(campionat):
                 date_string = select(row, '.tright')[0].text.strip()
                 print date_string
                 if len(date_string.split(' ')) == 2:
-                    date_string += ', 2015'
+                    date_string += ', %d' % datetime.date.today().year
                 print date_string
                 pub_date = datetime.datetime.strptime(date_string, '%B %d, %Y')
                 print pub_date
