@@ -144,7 +144,7 @@ class Team(models.Model):
     #: The name of team, as it's appear in livescore
     title = models.CharField(max_length=128)
     #: Slug is used for forming human-readable urls
-    slug = models.CharField(max_length=160, default='1')
+    slug = models.CharField(max_length=160, default='1', db_index=True)
     #: The home city of team (is used in sinonim name forming)
     city = models.CharField(max_length=128, blank=True, null=True)
     #: The name of couch (used in sinonim name forming)
