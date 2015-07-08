@@ -1,0 +1,48 @@
+{% extends 'index.html' %}
+{% load thumbnail %}
+    {% block slider %}
+        <!-- FLEXSLIDER -->
+        <div class="page-title">{{ team }}</div>
+        <section class="flex-wrapper">
+            <div id="slider" class="flexslider">
+                <ul class="slides">
+                    {% for photo in team.photo.all %}
+                        {% if photo.image.width > photo.image.height %}
+                            <li>
+                                <div class="flex-title">
+                                    <h3>{{ photo.title }}</h3>
+                                </div>
+                                {% thumbnail photo.image "1024x600" crop="center" as im %}
+                                    <img src="{{ im.url }}" alt="" />
+                                {% endthumbnail %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    {% endblock %}
+    {% block content %}
+                <div class="grid">
+                    <!-- GOOLKEEPERS -->
+                    <div class="unit half teamlist">
+                        <h3>Jucători</h3>
+                        <ul>
+                            {% for player in player_list %}
+                                <li>{{ player }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- DEFENDERS -->
+                    <div class="unit half teamlist">
+                        <h3>Meciuri</h3>
+                        <ul>
+                            {% for game in game_list %}
+                            <li>
+                                {{ game.pub_date|date:"d.m.Y" }} <a href="{% if game.news_set.first %}{% url 'news' game.campionat.slug game.news_set.first.slug %}{% endif %}">{{ game }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+    {% endblock %}

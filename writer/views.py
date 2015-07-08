@@ -1,4 +1,4 @@
-from game.models import Game, Campionat, News
+from game.models import Game, Campionat, News, Team, Player
 from django.db.models import Q
 from django.shortcuts import render
 from django.core.paginator import Paginator
@@ -14,11 +14,15 @@ def hero_of_the_day(day=datetime.date.today(), campionat=None):
         args &= Q(campionat=campionat)
     game_list = Game.objects.filter(args).all()
     hero = {'player': None, 'points': 0, 'data': None}
+    ret = False
     for game in game_list:
         h = game.hero()
         if h and (h['points'] > hero['points']):
             hero = h
-    return hero
+            ret = True
+    if ret:
+        return hero
+    return None
 
 
 def base(request, campionat=None):
@@ -67,6 +71,20 @@ def news(request, campionat=None, title=None):
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list,
                    'clasament_list': clasament_list, 'hero': hero})
+
+
+def team(request, campionat=None, team=None):
+    team = Team.objects.filter(Q(slug=team) & Q(campionat__slug=campionat)).first()
+    clasament_list = [team.campionat.clasament()]
+    player_list = list(set(list(Player.objects.filter(
+        Q(goal__team=team) & Q(goal__auto=False)).all())))
+    game_list = Game.objects.filter(
+        Q(team1 = team) | Q(team2 = team)
+    ).order_by('-pub_date')
+    return render(request, 'team.html', {'team': team,
+                                         'clasament_list': clasament_list,
+                                         'player_list': player_list,
+                                         'game_list': game_list})
 
 
 def rss(request, campionat=None):

@@ -193,7 +193,7 @@ blockquote cite {
     display: inline-block;
     font-size:12px;
     vertical-align: bottom;
-    width: 70%;
+    width: 100%;
     float: left;
 }
 #submenu ul{

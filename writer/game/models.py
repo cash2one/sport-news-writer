@@ -143,11 +143,13 @@ class Team(models.Model):
     """
     #: The name of team, as it's appear in livescore
     title = models.CharField(max_length=128)
+    #: Slug is used for forming human-readable urls
+    slug = models.CharField(max_length=160, default='1')
     #: The home city of team (is used in sinonim name forming)
     city = models.CharField(max_length=128, blank=True, null=True)
     #: The name of couch (used in sinonim name forming)
     couch_human = models.ForeignKey(Couch, blank=True, null=True)
-    #: The temporary value. If true - the team is host of given name. Is nulled after finish writing news.
+    #: The temporary value. If true - the team is host of given game. Is nulled after finish writing news.
     host = models.NullBooleanField(blank=True, null=True)
     #: Temporary value. If true - the team is on first place in league. Is nulled after finish writing news.
     lider = models.NullBooleanField(blank=True, null=True)

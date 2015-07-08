@@ -104,7 +104,9 @@
                                                     <h3>{{ news.game }}</h3>
                                                     <p>{{ news.title }}</p>
                                                 </div>
-                                                <img src="{{ news.photo.image.url }}" alt="" />
+                                                {% thumbnail news.photo.image "640x360" crop="center" as im %}
+                                                    <img src="{{ im.url }}" alt="" />
+                                                {% endthumbnail %}
                                             </li>
                                         {% endif %}
                                     {% endfor %}
@@ -208,7 +210,7 @@
                                 </thead>
                                 <tbody>
                                 {% for team in clasament %}
-                                    <tr>
+                                <tr {% if news_item %}{% if news_item.game.team1.title == team.team or news_item.game.team2.title == team.team %}style="border: 1px solid red;"{% endif %}{% endif %}>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ team.team }}</td>
                                         <td>{{ team.wins }}</td>
@@ -223,13 +225,6 @@
                         </div>
                     {% endfor %}
                     {% block sidebar %}
-                    <!-- SIDEBAR BOX -->
-                    <div class="sidebarbox">
-                        <h3>About Our Team</h3>
-                        <p>Elit cernantur in pariatur. Te illum de aute, a incididunt te pariatur. Vidisse aut tempor. Eu aut lorem cernantur, occaecat dolor mandaremus consequat. Do labore excepteur, dolor id admodum. Fabulas fugiat eiusmod incididunt. Si voluptate ita ullamco, iis minim incurreret voluptatibus an officia domesticarum nam cernantur est quis mentitum.
-                            <a href="club.html">Read More...</a>
-                        </p>
-                    </div>
                     <!-- SIDEBAR BOX -->
                     <div class="sidebarbox">
                         <div class="sidebarbox-title">

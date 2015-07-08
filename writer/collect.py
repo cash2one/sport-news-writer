@@ -11,6 +11,7 @@ from urlparse import urlparse
 import urllib
 from django.core.files import File
 from time import sleep
+from slugify import slugify
 
 
 DEVELOPER_KEY = "AIzaSyB0KMU3GZcwr5D-UqN46ZhlnjQLyNQwi20"
@@ -48,13 +49,13 @@ def collect(campionat):
                     if 'FT' in select(row, 'div.min')[0].text:
                         first_team = select(row, '.ply')[0].text
                         if Team.objects.filter(title=first_team).count() == 0:
-                            home_team = Team(title=first_team, campionat=campionat)
+                            home_team = Team(title=first_team, campionat=campionat, slug=slugify(first_team))
                             home_team.save()
                         else:
                             home_team = Team.objects.get(title=first_team)
                         second_team = select(row, '.ply')[1].text
                         if Team.objects.filter(title=second_team).count() == 0:
-                            away_team = Team(title=second_team, campionat=campionat)
+                            away_team = Team(title=second_team, campionat=campionat, slug=slugify(second_team))
                             away_team.save()
                         else:
                             away_team = Team.objects.get(title=second_team)
