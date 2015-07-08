@@ -88,6 +88,30 @@
             </div>
         </header>
         <div class="clear"></div>
+        <!-- MAIN MENU -->
+        <section id="mainmenu-container">
+            <a class="toggleMenu" href="javascript:;">Menu</a>
+            <nav>
+                <ul id="mainmenu">
+                    {% for campionat in campionat_list %}
+                    <li>
+                        <a href="{% url 'campionat' campionat.slug %}">
+                            <span>{{ campionat.title }}</span>
+                        </a>
+                        <ul>
+                            {% for team in campionat.team_set.all %}
+                            <li>
+                                <a href="{% url 'team' campionat.slug team.slug %}">
+                                    <span>{{ team }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </section>
         <!-- MAIN CONTAINER -->
         <section class="maincontainer">
             {% block slider %}
