@@ -62,7 +62,10 @@ def base(request, campionat=None):
 
 
 def news(request, campionat=None, title=None):
-    news_item = News.objects.filter(game__campionat__slug=campionat, slug=title).first()
+    news_item = News.objects.filter(
+        game__campionat__slug=campionat,
+        slug=title
+    ).first()
     campionat_list = Campionat.objects.all()
     clasament_list = [news_item.game.render_clasament()]
     if news_item.game != news_item.game.campionat.game_set.first():
@@ -74,12 +77,14 @@ def news(request, campionat=None, title=None):
 
 
 def team(request, campionat=None, team=None):
-    team = Team.objects.filter(Q(slug=team) & Q(campionat__slug=campionat)).first()
+    team = Team.objects.filter(
+        Q(slug=team) & Q(campionat__slug=campionat)
+    ).first()
     clasament_list = [team.campionat.clasament()]
     player_list = list(set(list(Player.objects.filter(
         Q(goal__team=team) & Q(goal__auto=False)).all())))
     game_list = Game.objects.filter(
-        Q(team1 = team) | Q(team2 = team)
+        Q(team1=team) | Q(team2=team)
     ).order_by('-pub_date')
     return render(request, 'team.html', {'team': team,
                                          'clasament_list': clasament_list,
@@ -93,3 +98,13 @@ def rss(request, campionat=None):
     template = get_template('rss.xml')
     return HttpResponse(template.render(Context(locals())),
                         content_type="application/rss+xml")
+
+
+def sitemap(request):
+    team_list = Team.objects.only('slug', 'campionat').all()
+    campionat_list = Campionat.objects.only('slug').all()
+    news_list = News.objects.only('slug', 'game').order_by('-pub_date')
+    pub_date = news_list.first().pub_date
+
+    template = get_template('sitemap.xml')
+    return HttpResponse(template.render(Context(locals())), content_type="application/rss+xml")

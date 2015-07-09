@@ -1,5 +1,10 @@
 {% extends 'index.html' %}
 {% load thumbnail %}
+{% block title %} | {{ news_item }}{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ news_item.game }}. {{ news_item.text|striptags|truncatewords:20 }}">
+    <meta name="keywords" content="fotbal, highlights, rezumat, {{ news_item.game.campionat.title }}, {{ news_item.game.team1 }}, {{ news_item.game.team2 }}, {{ news_item.game }}">
+{% endblock %}
 {% block slider %}
             <!-- PAGE TITLE -->
             <div class="page-title">{{ news_item }}</div>

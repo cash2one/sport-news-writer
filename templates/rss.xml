@@ -2,17 +2,17 @@
 {% load thumbnail %}
 <rss version="2.0">
 <channel>
-	<title>Sport-Express.MD</title>
-	<description>Sport-Express.MD</description>
-	<link>http://sport-express.md/</link>
+	<title>Fotbal.MD</title>
+	<description>Fotbal.MD</description>
+	<link>http://www.fotbal.md/</link>
 	<lastBuildDate>{% now "c" %}</lastBuildDate>
-	<generator>Sport-Express.MD</generator>
-	<copyright>Copyright 2015 Sport-Express.md</copyright>
+	<generator>Fotbal.MD</generator>
+	<copyright>Copyright 2015 Fotbal.md</copyright>
     {% for article in article_list %}
         <item>
             <title>{{ article.title }}</title>
-            <link>http://sport-express.md{% url 'news' article.game.campionat.slug article.slug %}</link>
-            <description>&lt;table&gt;&lt;tr&gt;&lt;td width=&quot;10&quot;&gt;{% if article.photo %}&lt;img src=&quot;http://sport-express.md/{% thumbnail article.photo.image 250x250 crop=center as im %}{{ im.url }}{% endthumbnail %}&quot; alt=&quot;&quot; /&gt;{% endif %}&lt;/td&gt;&lt;td&gt;{{ article.text|truncatewords_html:30 }}&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
+            <link>http://fotbal.md{% url 'news' article.game.campionat.slug article.slug %}</link>
+            <description>&lt;table&gt;&lt;tr&gt;&lt;td width=&quot;10&quot;&gt;{% if article.photo %}&lt;img src=&quot;http://www.fotbal.md/{% thumbnail article.photo.image 250x250 crop="center" as im %}{{ im.url }}{% endthumbnail %}&quot; alt=&quot;&quot; /&gt;{% endif %}&lt;/td&gt;&lt;td&gt;{{ article.text|truncatewords_html:30 }}&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description>
             <pubDate>{{ article.pub_date|date:"c" }}</pubDate>
         </item>
     {% endfor %}

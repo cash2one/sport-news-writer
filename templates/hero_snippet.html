@@ -1,6 +1,6 @@
 {% load thumbnail %}
 <h3>Omul zilei: {{ hero.player }}</h3>
-{% thumbnail hero.player.random_image.image "360x240" crop="top" as im %}
+{% thumbnail hero.player.random_image.image "297x198" crop="top" as im %}
     <img src="{{ im.url }}" alt="{{ im }}" />
 {% endthumbnail %}
 <p>Meciul: <a href="{% if hero.game.news_set.all %}{% url 'news' hero.game.campionat.slug hero.game.news_set.first.slug %}{% endif %}">{{ hero.game }}</a><br />

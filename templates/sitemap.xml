@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>http://www.fotbal.md/</loc>
+        <priority>0.9</priority>
+        <lastmod>{{ pub_date|date:"Y-m-d" }}</lastmod>
+        <changefreq>hourly</changefreq>
+    </url>
+    {% for campionat in campionat_list %}
+        <url>
+            <loc>http://www.fotbal.md{% url 'campionat' campionat.slug %}</loc>
+            <changefreq>hourly</changefreq>
+            <priority>0.7</priority>
+        </url>
+    {% endfor %}
+    {% for team in team_list %}
+        <url>
+            <loc>http://www.fotbal.md{% url 'team' team.campionat.slug team.slug %}</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    {% endfor %}
+    {% for news in news_list %}
+        <url>
+            <loc>http://www.fotbal.md{% url 'news' news.game.campionat.slug news.slug %}</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    {% endfor %}
+</urlset>
