@@ -125,6 +125,8 @@ def collect(campionat):
                                     player.save()
                                     game.goals.add(goal)
                                     game.save()
+                                    try: game.news()
+                                    except: pass
                                 except:
                                     pass
                         except:

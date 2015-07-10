@@ -1064,6 +1064,13 @@ class Game(models.Model):
             return random.sample(self.team1.photo.all(), 1)[0]
         else:
             collect_photo(game=self)
+            for goal in self.goals.all():
+                for player in [goal.author, goal.assist]:
+                    if player and not player.photos.count():
+                        collect_photo(player=player)
+            for team in [self.team1, self.team2]:
+                if not team.photo.count():
+                    collect_photo(team=team)
             return random.sample(self.images.all(), 1)[0]
         return None
 
