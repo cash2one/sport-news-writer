@@ -12,9 +12,8 @@ import collections
 import re
 from slugify import slugify
 from django.core.urlresolvers import reverse
-from django.utils.safestring import mark_safe
-from django.utils.html import escape
 import HTMLParser
+from writer.collect import collect_photo
 
 # Create your models here.
 
@@ -1063,6 +1062,9 @@ class Game(models.Model):
             return random.sample(self.winer().photo.all(), 1)[0]
         elif not self.winer():
             return random.sample(self.team1.photo.all(), 1)[0]
+        else:
+            collect_photo(game=self)
+            return random.sample(self.images.all(), 1)[0]
         return None
 
     def news(self, debug=False, regenerate=False):

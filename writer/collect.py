@@ -140,7 +140,7 @@ def collect_all():
     return 'ok'
 
 
-def collect_photo(player=None, team=None):
+def collect_photo(player=None, team=None, game=None):
     if player:
         goal = Goal.objects.filter(
             Q(author=player) & Q(auto=False)
@@ -148,10 +148,12 @@ def collect_photo(player=None, team=None):
         q = player.name + ' ' + goal.team.title + ' 2015'
     elif team:
         q = team.title + ' 2015'
+    elif game:
+        q = "%s %s %d" % (game.team1.title, game.team2.title, datetime.date.today().year)
     cse = build("customsearch", "v1", developerKey=DEVELOPER_KEY)
     res = cse.cse().list(
         q = q,
-        imgSize = "large",
+        imgSize = "xxlarge",
         num = 10,
         cx='008967187802311874018:z5qkxza9s1k',
         searchType = "image"
@@ -167,6 +169,9 @@ def collect_photo(player=None, team=None):
         elif team:
             team.photo.add(photo)
             team.save()
+        elif game:
+            game.images.add(photo)
+            game.save()
         print image['link']
     sleep(1)
     return res
