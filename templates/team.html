@@ -1,5 +1,10 @@
 {% extends 'index.html' %}
 {% load thumbnail %}
+{% block title %} | {{ team.title }}{% endblock %}
+{% block meta %}
+<meta name="description" content="{{ team.title }}: Galerie foto, lista meciurilor jucate, jucători notorii">
+<meta name="keywords" content="fotbal, {{ team.title }}, {{ team.campionat.title }}, {{ team.campionat }}">
+{% endblock %}
     {% block slider %}
         <!-- FLEXSLIDER -->
         <div class="page-title">{{ team }}</div>
