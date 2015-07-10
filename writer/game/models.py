@@ -11,6 +11,11 @@ import ast
 import collections
 import re
 from slugify import slugify
+from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
+import HTMLParser
+
 # Create your models here.
 
 
@@ -265,7 +270,7 @@ class Team(models.Model):
             variants = variants_s
         else:
             variants = variants_p
-        return random.sample(variants, 1)[0]
+        return '<strong><a href="%s" title="%s">%s</a></strong>' % (reverse('team', kwargs={'campionat': self.campionat.slug, 'team': self.slug}), self.title, random.sample(variants, 1)[0])
 
     def n(self):
         """
@@ -1062,10 +1067,18 @@ class Game(models.Model):
 
     def news(self, debug=False, regenerate=False):
         self.start()
+        news = None
+        if regenerate and self.news_set.first():
+            news = self.news_set.first()
+            self.used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
+            self.save()
+            self.used = ast.literal_eval(self.used_frases)
         title = self.title_frase(debug)
         begin_frase = self.title_frase(debug, begin=True)
+        """
         if self.lupta_loc():
             begin_frase += u' În această seară cele două echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
+        """
         first_goal_frase = ''
         if self.goals.count() > 0:
             first_goal_frase = self.first_goal_frase(debug)
@@ -1078,22 +1091,27 @@ class Game(models.Model):
         if self.goals.count() > 1:
             last_goal_frase = self.last_goal_frase(debug)
         conclusion = self.conclusion(debug)
+        html_parser = HTMLParser.HTMLParser()
         news_text = """
                     <p><b>%s</b></p>
                     <p>%s</p>
                     <p>%s</p>
                     <p>%s</p>
                     <p><b>%s</b></p>
-                    """ % (begin_frase, first_goal_frase, reg_goals, last_goal_frase, conclusion)
+                    """ % (html_parser.unescape(begin_frase), html_parser.unescape(first_goal_frase), html_parser.unescape(reg_goals), html_parser.unescape(last_goal_frase), html_parser.unescape(conclusion))
         news_text = typo(news_text)
         if not debug:
-            image = self.select_image()
-            if image:
-                news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self, slug=slugify(title))
+            if not news:
+                image = self.select_image()
+                if image:
+                    news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self, slug=slugify(title))
+                    news.save()
+            else:
+                news.title = title
+                news.text = news_text
                 news.save()
         else:
             self.used = {"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}
-            self.save()
         self.stop()
         return title, news_text
 

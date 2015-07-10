@@ -11,7 +11,7 @@
     Assisturi: {{ hero.data.assist }}<br />
 {% endif %}
 {% if hero.data.victory %}
-    În acest meci {{ hero.player }} a adus {{ hero.game.winer.g }} victoria, marcând în minutul {{ hero.game.goals.last.minute }}.
+    În acest meci {{ hero.player }} a adus {{ hero.game.winer.g|safe }} victoria, marcând în minutul {{ hero.game.goals.last.minute }}.
 {% endif %}
 {% if hero.data.equal %}
     {{ hero.player }} şi-a salvat echipa de la înfrângere, marcând golul egalizator din această seară în minutul {{ hero.game.goals.last.minute }}.
