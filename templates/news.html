@@ -14,15 +14,25 @@
             </div>
 {% endblock %}
 {% block content %}
-                    <article>
+                    <article itemscope itemtype="http://schema.org/SportsEvent">
                         <!-- POST DATE -->
-                        <div class="blogpostdate">{{ news_item.pub_date }}</div> 
-                        <div class="match-results">
-                            <span><a href="{% url 'team' news_item.game.campionat.slug news_item.game.team1.slug %}">{{ news_item.game.team1 }}</a></span>
+                        <span itemscope itemprop="location" itemtype="http://schema.org/Place" style="display: none;">
+                            <span itemprop="name">Stadionul echipei {{ news_item.game.team1 }}</span>
+                            <span itemprop="address">{{ news_item.game.campionat }}</span>
+                        </span>
+                        <div class="blogpostdate" itemprop="startDate">{{ news_item.pub_date|date:"d/m/Y" }}</div> 
+                        <div class="match-results" itemprop="name">
+                            <span itemprop="homeTeam" itemscope itemtype="http://schema.org/SportsTeam"><a href="{% url 'team' news_item.game.campionat.slug news_item.game.team1.slug %}" itemprop="url"><span itemprop="name">{{ news_item.game.team1 }}</span></a></span>
                             <span class="score">{{ news_item.game.goal_team1 }} - {{ news_item.game.goal_team2 }}</span>
-                            <span><a href="{% url 'team' news_item.game.campionat.slug news_item.game.team2.slug %}">{{ news_item.game.team2 }}</a></span>
+                            <span itemprop="awayTeam" itemscope itemtype="http://schema.org/SportsTeam"><a href="{% url 'team' news_item.game.campionat.slug news_item.game.team2.slug %}" itemprop="url"><span itemprop="name">{{ news_item.game.team2 }}</span></a></span>
                         </div>
-                        {{ news_item.text|safe }}
+                        <div itemprop="review" itemtype="http://schema.org/Review" itemscope>
+                            <span display="none;" itemprop="name">{{ news_item.title }}</span>
+                            <div itemprop="reviewBody">
+                                {{ news_item.text|safe }}
+                            </div>
+                            <span display="none;" itemprop="author">Sorin Octavian Cer</span>
+                        </div>
                         {% if news_item.game.live %}
                             <h3>LIVE:</h3>
                             {{ news_item.game.live|safe }}
@@ -36,7 +46,7 @@
                             <ul id="gridbox1" class="team-gallery">
                                 {% for image in news_item.game.images.all %}
                                     <li data-filter="photos">
-                                        <a class="clb-photo" href="{{ image.image.url }}" data-rel="photos">
+                                        <a class="clb-photo" href="{{ image.image.url }}" data-rel="photos" itemprop="image">
                                         {% thumbnail image.image "360x360" crop="center" as im %}
                                             <img src="{{ im.url }}" alt="{{ image.title }}" />
                                         {% endthumbnail %}
@@ -45,7 +55,7 @@
                                 {% endfor %}
                                 {% for goal in news_item.game.goals.all %}
                                         <li data-filter="photos">
-                                            <a class="clb-photo" href="{{ goal.author.random_image.image.url }}" data-rel="photos">
+                                            <a class="clb-photo" href="{{ goal.author.random_image.image.url }}" data-rel="photos" itemprop="image">
                                             {% thumbnail goal.author.random_image.image "360x360" crop="center" as im %}
                                                 <img src="{{ im.url }}" alt="{{ image.title }}" />
                                             {% endthumbnail %}
