@@ -65,6 +65,8 @@
                             </ul>
                         {% endif %}
                     </article>
+                    {% load disqus_tags %}
+                    {% disqus_show_comments %}
                     <hr/>
 {% endblock %}
 {% block sidebar %}

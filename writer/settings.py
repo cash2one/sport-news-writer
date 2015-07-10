@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*',]
 
 INSTALLED_APPS = (
     'django.contrib.admin',
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -40,7 +41,11 @@ INSTALLED_APPS = (
     'gunicorn',
     'bootstrap_pagination',
     'sorl.thumbnail',
+    'disqus',
 )
+
+DISQUS_API_KEY = 'HYxU9ZrtrCs4L9mZxIBmlzJUo9NU6ozRfpkzMpBvSHACfnraqeFyhu5KIoaPupI5'
+DISQUS_WEBSITE_SHORTNAME = 'fotbalmd'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
