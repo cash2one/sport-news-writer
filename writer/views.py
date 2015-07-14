@@ -112,11 +112,3 @@ def rss(request, campionat=None):
                         content_type="application/rss+xml")
 
 
-def sitemap(request):
-    team_list = Team.objects.only('slug', 'campionat').all()
-    campionat_list = Campionat.objects.only('slug').all()
-    news_list = News.objects.only('slug', 'game').order_by('-pub_date')
-    pub_date = news_list.first().pub_date
-
-    template = get_template('sitemap.xml')
-    return HttpResponse(template.render(Context(locals())), content_type="application/rss+xml")

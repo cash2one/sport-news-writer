@@ -2,7 +2,6 @@
 
 from django.db import models
 from django.db.models import Q
-from django.contrib import admin
 from django.template import Context
 from django.template import Template
 import random
@@ -15,6 +14,7 @@ from django.core.urlresolvers import reverse
 import HTMLParser
 import writer.collect
 import datetime
+from django.template.loader import get_template
 
 # Create your models here.
 
@@ -59,6 +59,20 @@ def get_season():
     return Season.objects.last().id
 
 
+def sitemap():
+    team_list = Team.objects.only('slug', 'campionat').all()
+    campionat_list = Campionat.objects.only('slug').all()
+    news_list = News.objects.only('slug', 'game').order_by('-pub_date')
+    pub_date = news_list.first().pub_date
+
+    template = get_template('sitemap.xml')
+    f = open('/var/www/sport-news-writer/sitemap.xml', 'w')
+    cont = template.render(Context(locals()))
+    f.write(cont)
+    f.close()
+    return
+
+
 class Photo(models.Model):
     title = models.CharField(max_length=1024)
     image = models.ImageField(upload_to='images')
@@ -66,7 +80,6 @@ class Photo(models.Model):
     def __unicode__(self):
         return str(self.id)
 
-admin.site.register(Photo)
 
 
 class Season(models.Model):
@@ -79,7 +92,6 @@ class Season(models.Model):
     def __unicode__(self):
         return self.title
 
-admin.site.register(Season)
 
 
 class Campionat(models.Model):
@@ -101,7 +113,6 @@ class Campionat(models.Model):
     def clasament(self):
         return self.game_set.first().render_clasament()
 
-admin.site.register(Campionat)
 
 
 class Player(models.Model):
@@ -127,9 +138,6 @@ class Player(models.Model):
             return random.sample(self.photos.all(), 1)[0]
         return None
 
-class PlayerAdmin(admin.ModelAdmin):
-    list_display = ['name', 'goals_total']
-admin.site.register(Player, PlayerAdmin)
 
 
 class Couch(models.Model):
@@ -138,8 +146,6 @@ class Couch(models.Model):
 
     def __unicode__(self):
         return self.name
-
-admin.site.register(Couch)
 
 
 class Team(models.Model):
@@ -416,7 +422,6 @@ class Team(models.Model):
             lower = None
         return upper, lower
 
-admin.site.register(Team)
 
 
 class Goal(models.Model):
@@ -586,8 +591,6 @@ class Goal(models.Model):
         return random.sample(v, 1)[0]
 
 
-admin.site.register(Goal)
-
 
 class Carton(models.Model):
     player = models.ForeignKey(Player)
@@ -598,8 +601,6 @@ class Carton(models.Model):
 
     def __unicode__(self):
         return self.player.name
-
-admin.site.register(Carton)
 
 
 class Game(models.Model):
@@ -1139,6 +1140,7 @@ class Game(models.Model):
                 if image:
                     news = News(title=title, text=news_text, photo=image, pub_date=datetime.datetime.now(), game=self, slug=slugify(title))
                     news.save()
+                    sitemap()
             else:
                 news.title = title
                 news.text = news_text
@@ -1147,8 +1149,6 @@ class Game(models.Model):
             self.used = {"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}
         self.stop()
         return title, news_text
-
-admin.site.register(Game)
 
 
 class TitleFrase(models.Model):
@@ -1178,12 +1178,6 @@ class TitleFrase(models.Model):
         return ret
 
 
-class TitleFraseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'min_score_diference', 'max_score_diference', 'min_total_goals', 'max_total_goals',
-                    'last_goal_final', 'triple', 'duble', 'urcare', 'coborire', 'win_ser', 'stop_win_ser', 'lose_ser', 'stop_lose_ser',
-                    'nonlose_ser', 'stop_nonlose_ser')
-
-admin.site.register(TitleFrase, TitleFraseAdmin)
 
 class FirstGoalFrase(models.Model):
     title = models.TextField(blank=True, null=True)
@@ -1199,10 +1193,6 @@ class FirstGoalFrase(models.Model):
         return ret
 
 
-class FirstGoalFraseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'min_minute', 'max_minute', 'only')
-
-admin.site.register(FirstGoalFrase, FirstGoalFraseAdmin)
 
 
 class RegularGoalFrase(models.Model):
@@ -1219,11 +1209,6 @@ class RegularGoalFrase(models.Model):
         else:
             return ''
 
-
-class RegularGoalFraseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'equal', 'reverse', 'only', 'duble', 'triple')
-
-admin.site.register(RegularGoalFrase, RegularGoalFraseAdmin)
 
 
 class GoalGroupFrase(models.Model):
@@ -1244,7 +1229,6 @@ class GoalGroupFrase(models.Model):
     def __unicode__(self):
         return self.title
 
-admin.site.register(GoalGroupFrase)
 
 
 class LastGoalFrase(models.Model):
@@ -1262,7 +1246,6 @@ class LastGoalFrase(models.Model):
             ret = 'None'
         return ret
 
-admin.site.register(LastGoalFrase)
 
 class Conclusion(models.Model):
     title = models.TextField(blank=True, null=True)
@@ -1272,7 +1255,6 @@ class Conclusion(models.Model):
     def __unicode__(self):
         return self.title
 
-admin.site.register(Conclusion)
 
 
 class News(models.Model):
@@ -1286,7 +1268,6 @@ class News(models.Model):
     def __unicode__(self):
         return self.title
 
-admin.site.register(News)
 
 
 class Synonims(models.Model):
@@ -1295,5 +1276,4 @@ class Synonims(models.Model):
     used = models.TextField(blank=True, null=True)
     def __unicode__(self):
         return self.title
-admin.site.register(Synonims)
 add_to_builtins('writer.game.templatetags.syns')

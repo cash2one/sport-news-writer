@@ -42,6 +42,20 @@ def get_or_create_team(title, campionat):
 
 
 def update_game_date(row, campionat):
+    """
+    When we collecting the datas about games from livescore, we can get
+    the date of the game from there. Is usefull when you want to add the
+    past games. In this case we collect the games until we rich a row with
+    the pub_date info, and update all games in this campionat with the given
+    value.
+
+    :param row: the row with info about game date
+    :type row: soup
+    :param campionat: the campionat instance
+    :type campionat: writer.game.models.Campionat
+    :returns: True
+    :rtype: bool
+    """
     if 'row-tall' in row['class']:
         date_struct = select(row, '.tright')
         if date_struct:
@@ -190,6 +204,16 @@ def get_author(score_row, g):
 
 
 def create_goal(score_row, g):
+    """
+    Get the info about goal event and create a Goal instance
+
+    :param score_row: the soap string with info about goal
+    :type score_row: soap
+    :param g: the game instance
+    :type g: writer.game.models.Game
+    :returns: the goal instance or False
+    :rtype: writer.game.models.Goal or bool
+    """
     goal_row = select(score_row, 'span.goal')
     if goal_row:
         minute = get_time(score_row)
@@ -225,6 +249,25 @@ def create_goal(score_row, g):
     return False
 
 
+def create_carton(score_row, g):
+    yellow_card_row = select(score_row, 'span.inc.yellowcard')
+    red_card_row = select(score_row, 'span.inc.redcard')
+    redyellow_card_row = select(score_row, 'span.inc.redyellowcard')
+    if yellow_card_row or red_card_row or redyellow_card_row:
+        minute = get_time(score_row)
+        (player, team, recipient) = get_author(score_row, g)
+        card = game.models.Carton(minute=minute, player=player, team=team)
+        if not yellow_card_row:
+            card.red = True
+            if redyellow_card_row:
+                card.cumul = True
+        card.save()
+        g.cartons.add(card)
+        g.save()
+        return card
+    return False
+
+
 def collect(campionat, load_date=False):
     url = campionat.url
     soup = Soup(urllib2.urlopen(url))
@@ -243,7 +286,8 @@ def collect(campionat, load_date=False):
                     get_couches(score_soup, g)
                     score_row_list = select(score_soup, 'div.row-gray')
                     for score_row in score_row_list:
-                        create_goal(score_row, g)
+                        if not create_goal(score_row, g):
+                            create_carton(score_row, g)
                     print g.goal_team1, g.goal_team2
                     g.news()
     return 'ok'

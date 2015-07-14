@@ -3,7 +3,7 @@
     <url>
         <loc>http://www.fotbal.md/</loc>
         <priority>0.9</priority>
-        <lastmod>2015-05-31</lastmod>
+        <lastmod>2015-07-14</lastmod>
         <changefreq>hourly</changefreq>
     </url>
     
@@ -21,6 +21,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Italia-Serie-A/</loc>
+            <changefreq>hourly</changefreq>
+            <priority>0.7</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/</loc>
             <changefreq>hourly</changefreq>
             <priority>0.7</priority>
         </url>
@@ -375,12 +381,6 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Italia-Serie-A/echipe/Sassari-Torres/</loc>
-        	<changefreq>hourly</changefreq>
-        	<priority>0.4</priority>
-        </url>
-    
-        <url>
             <loc>http://www.fotbal.md/Spania-Primera-Division/echipe/Almeria/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.4</priority>
@@ -608,6 +608,132 @@
         	<priority>0.4</priority>
         </url>
     
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/FC-Voluntari/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/CSMS-Iasi/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Astra-Giurgiu/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Concordia-Chiajna/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/FC-Viitorul-Constanta/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/CFR-Cluj/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Steaua-Bucuresti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Petrolul-Ploiesti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/CS-Universitatea-Craiova/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Botosani/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Tirgu-Mures/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Dinamo-Bucuresti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/ACS-Poli-Timisoara/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/echipe/Pandurii/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/ACS-Poli-Timisoara-au-cedat-un-singur-gol-in-partida-cu-Pandurii/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Balanta-de-pe-tabloul-de-marcaj-a-ramas-intacta-in-partida-CS-Universitatea-Craiova-0-0-Botosani/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Balanta-de-pe-tabloul-de-marcaj-a-ramas-intacta-in-partida-Tirgu-Mures-0-0-Dinamo-Bucuresti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Nimeni-n-a-fost-mai-bun-astazi-in-meciul-Steaua-Bucuresti-0-0-Petrolul-Ploiesti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/FC-Viitorul-Constanta-a-incheiat-la-egalitate-2-2-meciul-de-astazi-cu-CFR-Cluj/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Astra-Giurgiu-a-incheiat-la-egalitate-2-2-meciul-de-astazi-cu-Concordia-Chiajna/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Cu-un-scor-de-1-la-1-s-au-despartit-astazi-FC-Voluntari-si-CSMS-Iasi/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
     
         <url>
             <loc>http://www.fotbal.md/Italia-Serie-A/Fiorentina-si-a-continuat-seria-de-victorii-in-aceasta-seara-impunandu-se-in-fata-celor-de-la-ChievoVerona/</loc>
