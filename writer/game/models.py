@@ -13,7 +13,8 @@ import re
 from slugify import slugify
 from django.core.urlresolvers import reverse
 import HTMLParser
-from writer.collect import collect_photo
+import writer.collect
+import datetime
 
 # Create your models here.
 
@@ -241,15 +242,18 @@ class Team(models.Model):
                 echipa + ' din ' + self.city,
                 gruparea + ' din ' + self.city
             ]
-        variants_s += [
-            echipa + ' lui ' + self.couch_human.name,
-            gruparea + ' lui ' + self.couch_human.name,
-        ]
+        if self.couch_human:
+            variants_s += [
+                echipa + ' lui ' + self.couch_human.name,
+                gruparea + ' lui ' + self.couch_human.name,
+            ]
+            variants_p += [
+                elevii + ' lui ' + self.couch_human.name,
+                jucatorii + ' lui ' + self.couch_human.name,
+                fotbalistii + ' lui ' + self.couch_human.name
+            ]
         variants_p += [
             cei + ' ' + self.title,
-            elevii + ' lui ' + self.couch_human.name,
-            jucatorii + ' lui ' + self.couch_human.name,
-            fotbalistii + ' lui ' + self.couch_human.name
         ]
         if self.host:
             variants_s.append(echipa + ' gazda')
@@ -585,6 +589,19 @@ class Goal(models.Model):
 admin.site.register(Goal)
 
 
+class Carton(models.Model):
+    player = models.ForeignKey(Player)
+    minute = models.IntegerField()
+    red = models.BooleanField(default=False)
+    cumul = models.BooleanField(default=False)
+    team = models.ForeignKey(Team)
+
+    def __unicode__(self):
+        return self.player.name
+
+admin.site.register(Carton)
+
+
 class Game(models.Model):
     campionat = models.ForeignKey(Campionat, blank=True, null=True)
     team1 = models.ForeignKey(Team, related_name='game_team1')
@@ -593,6 +610,7 @@ class Game(models.Model):
     goal_team2 = models.IntegerField(default=0)
     pub_date = models.DateField(blank=True, null=True, db_index=True)
     goals = models.ManyToManyField(Goal, blank=True, null=True)
+    cartons = models.ManyToManyField(Carton, blank=True, null=True)
     url = models.CharField(max_length=512, blank=True, null=True)
     classament = models.TextField(blank=True, null=True)
     classament_rendered = models.TextField(blank=True, null=True)
@@ -812,7 +830,7 @@ class Game(models.Model):
             return None
 
     def score_diference(self):
-        return abs(self.goal_team1 - self.goal_team2)
+        return abs(int(self.goal_team1) - int(self.goal_team2))
 
     def total_goals(self):
         return self.goal_team1 + self.goal_team2
@@ -1058,19 +1076,23 @@ class Game(models.Model):
             return random.sample(g.images.all(), 1)[0]
         elif Photo.objects.filter(player__goal__game=self).count():
             return random.sample(Photo.objects.filter(player__goal__game=self).all(), 1)[0]
-        elif self.winer():
+        elif self.winer() and self.winer().photo.count():
             return random.sample(self.winer().photo.all(), 1)[0]
-        elif not self.winer():
+        elif not self.winer() and self.team1.photo.count():
             return random.sample(self.team1.photo.all(), 1)[0]
         else:
-            collect_photo(game=self)
+            try:
+                writer.collect.collect_photo(g=self)
+            except: pass
             for goal in self.goals.all():
                 for player in [goal.author, goal.assist]:
                     if player and not player.photos.count():
-                        collect_photo(player=player)
+                        try: writer.collect.collect_photo(player=player)
+                        except: pass
             for team in [self.team1, self.team2]:
                 if not team.photo.count():
-                    collect_photo(team=team)
+                    try: writer.collect.collect_photo(team=team)
+                    except: pass
             return random.sample(self.images.all(), 1)[0]
         return None
 
@@ -1099,7 +1121,9 @@ class Game(models.Model):
         last_goal_frase = ''
         if self.goals.count() > 1:
             last_goal_frase = self.last_goal_frase(debug)
-        conclusion = self.conclusion(debug)
+        conclusion = ''
+        if self.team1.etape(self.id) > 7:
+            conclusion = self.conclusion(debug)
         html_parser = HTMLParser.HTMLParser()
         news_text = """
                     <p><b>%s</b></p>
@@ -1113,7 +1137,7 @@ class Game(models.Model):
             if not news:
                 image = self.select_image()
                 if image:
-                    news = News(title=title, text=news_text, photo=image, pub_date=self.pub_date, game=self, slug=slugify(title))
+                    news = News(title=title, text=news_text, photo=image, pub_date=datetime.datetime.now(), game=self, slug=slugify(title))
                     news.save()
             else:
                 news.title = title

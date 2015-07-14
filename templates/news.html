@@ -27,11 +27,11 @@
                             <span itemprop="awayTeam" itemscope itemtype="http://schema.org/SportsTeam"><a href="{% url 'team' news_item.game.campionat.slug news_item.game.team2.slug %}" itemprop="url"><span itemprop="name">{{ news_item.game.team2 }}</span></a></span>
                         </div>
                         <div itemprop="review" itemtype="http://schema.org/Review" itemscope>
-                            <span display="none;" itemprop="name">{{ news_item.title }}</span>
+                            <span style="display: none;" itemprop="name">{{ news_item.title }}</span>
                             <div itemprop="reviewBody">
                                 {{ news_item.text|safe }}
                             </div>
-                            <span display="none;" itemprop="author">Sorin Octavian Cer</span>
+                            <span style='display: none;' itemprop="author">Sorin Octavian Cer</span>
                         </div>
                         {% if news_item.game.live %}
                             <h3>LIVE:</h3>

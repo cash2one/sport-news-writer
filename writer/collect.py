@@ -1,4 +1,6 @@
-from game.models import Game, Goal, Team, Campionat, Player, Photo, Couch
+# -*- coding: utf-8 -*-
+
+import game.models
 from django.db.models import Q
 from re import split, sub
 import urllib2
@@ -19,167 +21,296 @@ YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
 
-def collect(campionat):
+def get_or_create_player(name):
+    if not game.models.Player.objects.filter(name=name).count():
+        player = game.models.Player(name=name)
+        player.save()
+    else:
+        player = game.models.Player.objects.get(name=name)
+    return player
+
+
+def get_or_create_team(title, campionat):
+    if not game.models.Team.objects.filter(title=title).count():
+        team = game.models.Team(
+            title=title, campionat=campionat, slug=slugify(title)
+        )
+        team.save()
+    else:
+        team = game.models.Team.objects.get(title=title)
+    return team
+
+
+def update_game_date(row, campionat):
+    if 'row-tall' in row['class']:
+        date_struct = select(row, '.tright')
+        if date_struct:
+            date_string = date_struct[0].text.strip()
+            print date_string
+            if len(date_string.split(' ')) == 2:
+                date_string += ', %d' % datetime.date.today().year
+            print date_string
+            pub_date = datetime.datetime.strptime(date_string, '%B %d, %Y')
+            print pub_date
+            game.models.Game.objects.filter(
+                Q(campionat=campionat) & Q(pub_date__isnull=True)
+            ).update(pub_date=pub_date)
+    return
+
+
+def get_score_link(row):
+    """
+    Get the link to detailed info about the game.
+    If we found a link and the game for this link doesn't exist,
+    then we give the link. Else we return False.
+
+    :param row: a soup row
+    :type row: Soup
+    :returns: a link to detailed info about game
+    :rtype: str or bool
+    """
+    score_link = None
+    if select(row, '.sco a'):
+        relative_link = select(row, '.sco a')[0]['href']
+        score_link = 'http://www.livescore.com%s' % relative_link
+    print score_link
+    if score_link and not game.models.Game.objects.filter(
+        url=score_link
+    ).count():
+        return score_link
+    return False
+
+
+def create_game(row, campionat, load_date, score_link):
+    """
+    Is a function for creating a game instance from collected datas.
+
+    :param row: the Soup string from where we collect datas
+    :type row: soup
+    :param campionat: the campionat instance of future game
+    :type campionat: writer.game.models.Campionat
+    :param load_date: do we need to give the date of game from row, or we can assume that the event happend today?
+    :type load_date: bool
+    :param score_link: the link to detailed info about this game
+    :type score_link: str
+    :returns: a game
+    :rtype: writer.game.models.Game
+    """
+    if 'FT' in select(row, 'div.min')[0].text:
+        first_team = select(row, '.ply')[0].text
+        home_team = get_or_create_team(first_team, campionat)
+        second_team = select(row, '.ply')[1].text
+        away_team = get_or_create_team(second_team, campionat)
+        score = select(row, '.sco')[0].text
+        goal_team1 = split(' - ', score)[0]
+        goal_team2 = split(' - ', score)[1]
+        g = game.models.Game(
+            campionat=campionat, team1=home_team,
+            team2=away_team, goal_team1=goal_team1,
+            goal_team2=goal_team2, pub_date=None, url=score_link
+        )
+        if not load_date:
+            g.pub_date = datetime.date.today()
+        g.save()
+        return g
+    return False
+
+
+def get_couches(score_soup, g):
+    """
+    Find the info about couches of teams in this game
+
+    :param score_soup: the soup with detailed info about the game
+    :type score_soup: Soup
+    :param g: the game instance
+    :type g: writer.game.models.Game
+    :returns: True
+    :rtype: bool
+    """
+    couches_and_formulas = select(score_soup, 'div.hidden div.col-offset-1')
+    couches = []
+    if len(couches_and_formulas) >= 3:
+        for couch_name in [
+            couches_and_formulas[2].text,
+            couches_and_formulas[3].text
+        ]:
+            if game.models.Couch.objects.filter(name=couch_name).count():
+                couch = game.models.Couch.objects.filter(
+                    name=couch_name
+                ).first()
+            else:
+                couch = game.models.Couch(name=couch_name)
+                couch.save()
+            couches.append(couch)
+        g.team1.couch_human = couches[0]
+        g.team2.couch_human = couches[1]
+        g.team1.save()
+        g.team2.save()
+    return
+
+
+def get_time(score_row):
+    """
+    Get the minute when the event was happend. Return the minute if any,
+    or False if not.
+
+    :param score_row: a soup string with info about event
+    :type score_row: soup
+    :returns: a minute when the event was happend or False
+    :rtype: int or bool
+    """
+    minute_row = select(score_row, 'div.min')
+    if minute_row:
+        minute = int(split("'", minute_row[0].text)[0])
+        return minute
+    return False
+
+
+def get_author(score_row, g):
+    """
+    Get info about the author of event and the affected teams
+
+    :param score_row: the soup string with info about event
+    :type score_row: soup
+    :param g: the game instance
+    :type g: writer.game.models.Game
+    :returns: the author player, the author team and the recipient team
+    :rtype: touple
+    """
+    if select(score_row, 'span.name')[0].text != '':
+        author = select(score_row, 'span.name')[0].text
+        team = g.team1
+        recipient = g.team2
+    else:
+        author = select(score_row, 'span.name')[1].text
+        team = g.team2
+        recipient = g.team1
+    player = get_or_create_player(author)
+    return (player, team, recipient)
+
+
+def create_goal(score_row, g):
+    goal_row = select(score_row, 'span.goal')
+    if goal_row:
+        minute = get_time(score_row)
+        print minute
+        (player, team, recipient) = get_author(score_row, g)
+        penalty = False
+        auto = False
+        assist = None
+        if '(pen.)' in str(score_row):
+            print 'we have a penalty'
+            penalty = True
+        elif '(o.g.)' in str(score_row):
+            print 'autogol!!!!!!!!!'
+            auto = True
+        elif '(assist)' in str(score_row):
+            assist = sub(
+                '\(assist\)', '', select(score_row, 'span.assist')[0].text
+            ).strip()
+            assist = get_or_create_player(assist)
+            print 'Assist: ', assist
+        goal = game.models.Goal(
+            author=player, minute=minute, team=team,
+            penalty=penalty, auto=auto, assist=assist,
+            recipient=recipient
+        )
+        goal.save()
+        player.goals_in_season += 1
+        player.goals_total += 1
+        player.save()
+        g.goals.add(goal)
+        g.save()
+        return goal
+    return False
+
+
+def collect(campionat, load_date=False):
     url = campionat.url
     soup = Soup(urllib2.urlopen(url))
     row_list = select(soup, '.content > div')
     print row_list, len(row_list)
     row_list.reverse()
-    i = 0
     for row in row_list:
-        if 'row-tall' in row['class']:
-            try:
-                date_string = select(row, '.tright')[0].text.strip()
-                print date_string
-                if len(date_string.split(' ')) == 2:
-                    date_string += ', %d' % datetime.date.today().year
-                print date_string
-                pub_date = datetime.datetime.strptime(date_string, '%B %d, %Y')
-                print pub_date
-                Game.objects.filter(Q(campionat=campionat) & Q(pub_date__isnull=True)).update(pub_date=pub_date)
-            except:
-                pass
-        elif 'row-gray' in row['class']:
-            try:
-                score_link = 'http://www.livescore.com' + select(row, '.sco a')[0]['href']
-                print score_link
-                if Game.objects.filter(url=score_link).count() == 0:
-                    i += 1
-                    print 'we haven\'t this game'
-                    if 'FT' in select(row, 'div.min')[0].text:
-                        first_team = select(row, '.ply')[0].text
-                        if Team.objects.filter(title=first_team).count() == 0:
-                            home_team = Team(title=first_team, campionat=campionat, slug=slugify(first_team))
-                            home_team.save()
-                        else:
-                            home_team = Team.objects.get(title=first_team)
-                        second_team = select(row, '.ply')[1].text
-                        if Team.objects.filter(title=second_team).count() == 0:
-                            away_team = Team(title=second_team, campionat=campionat, slug=slugify(second_team))
-                            away_team.save()
-                        else:
-                            away_team = Team.objects.get(title=second_team)
-                        score = select(row, '.sco')[0].text
-                        goal_team1 = split(' - ', score)[0]
-                        goal_team2 = split(' - ', score)[1]
-                        game = Game(campionat=campionat, team1 = home_team, team2 = away_team, goal_team1 = goal_team1, goal_team2 = goal_team2, pub_date=None, url=score_link)
-                        game.save()
-                        try:
-                            score_link = 'http://www.livescore.com' + select(row, '.sco a')[0]['href']
-                            print score_link
-                            score_soup = Soup(urllib2.urlopen(score_link))
-                            couches_and_formulas = select(score_soup, 'div.hidden div.col-offset-1')
-                            couches = []
-                            for couch_name in [couches_and_formulas[2].text, couches_and_formulas[3].text]:
-                                if Couch.objects.filter(name=couch_name).count():
-                                    couch = Couch.objects.filter(name=couch_name).first()
-                                else:
-                                    couch = Couch(name=couch_name)
-                                    couch.save()
-                                couches.append(couch)
-                            home_team.couch_human = couches[0]
-                            away_team.couch_human = couches[1]
-                            home_team.save()
-                            away_team.save()
-                            score_row_list = select(score_soup, 'div.row-gray')
-                            for score_row in score_row_list:
-                                try:
-                                    goal_bool = select(score_row, 'span.goal')[0]
-                                    print goal_bool, score_row
-                                    minute = int(split("'", select(score_row, 'div.min')[0].text)[0])
-                                    print minute
-                                    if select(score_row, 'span.name')[0].text != '':
-                                        author = select(score_row, 'span.name')[0].text
-                                        team = home_team
-                                        recipient = away_team
-                                    else:
-                                        author = select(score_row, 'span.name')[1].text
-                                        team = away_team
-                                        recipient = home_team
-                                    if Player.objects.filter(name=author).count() == 0:
-                                        player = Player(name=author)
-                                        player.save()
-                                    else:
-                                        player = Player.objects.get(name=author)
-                                    penalty = False
-                                    auto = False
-                                    assist = None
-                                    if '(pen.)' in str(score_row):
-                                        print 'we have a penalty'
-                                        penalty = True
-                                    elif '(o.g.)' in str(score_row):
-                                        print 'autogol!!!!!!!!!'
-                                        auto = True
-                                    elif '(assist)' in str(score_row):
-                                        assist = sub('\(assist\)', '', select(score_row, 'span.assist')[0].text).strip()
-                                        if Player.objects.filter(name=assist).count() == 0:
-                                            assist = Player(name=assist)
-                                            assist.save()
-                                        else:
-                                            assist = Player.objects.get(name=assist)
-                                        print 'Assist: ', assist
-                                    goal = Goal(author = player, minute=minute, team=team, penalty=penalty, auto=auto, assist=assist, recipient=recipient)
-                                    goal.save()
-                                    player.goals_in_season += 1
-                                    player.goals_total += 1
-                                    player.save()
-                                    game.goals.add(goal)
-                                    game.save()
-                                    try: game.news()
-                                    except: pass
-                                except:
-                                    pass
-                        except:
-                            pass
-            except:
-                pass
+        if load_date:
+            update_game_date(row, campionat)
+        if 'row-gray' in row['class']:
+            score_link = get_score_link(row)
+            if score_link:
+                g = create_game(row, campionat, load_date, score_link)
+                if g:
+                    score_soup = Soup(urllib2.urlopen(score_link))
+                    get_couches(score_soup, g)
+                    score_row_list = select(score_soup, 'div.row-gray')
+                    for score_row in score_row_list:
+                        create_goal(score_row, g)
+                    print g.goal_team1, g.goal_team2
+                    g.news()
     return 'ok'
 
 
 def collect_all():
-    for campionat in Campionat.objects.all():
+    for campionat in game.models.Campionat.objects.all():
         collect(campionat)
     return 'ok'
 
 
-def collect_photo(player=None, team=None, game=None):
+def load_new_videos():
+    time_delta = datetime.timedelta(hours=120)
+    begin_date = datetime.datetime.now() - time_delta
+    for g in game.models.Game.objects.filter(
+        Q(pub_date__gte=begin_date) & Q(video__isnull=True)
+    ).all():
+        try:
+            collect_video_game(g=g)
+        except:
+            pass
+    return True
+
+
+def collect_photo(player=None, team=None, g=None):
+    year = datetime.date.today().year
     if player:
-        goal = Goal.objects.filter(
+        goal = game.models.Goal.objects.filter(
             Q(author=player) & Q(auto=False)
         ).order_by('-id').first()
-        q = player.name + ' ' + goal.team.title + ' 2015'
+        q = "%s %s %d" % (player.name, goal.team.title, year)
     elif team:
-        q = team.title + ' 2015'
-    elif game:
-        q = "%s %s %d" % (game.team1.title, game.team2.title, datetime.date.today().year)
+        q = "%s %d" % (team.title, year)
+    elif g:
+        q = "%s %s %d" % (g.team1.title, g.team2.title, year)
     cse = build("customsearch", "v1", developerKey=DEVELOPER_KEY)
     res = cse.cse().list(
-        q = q,
-        imgSize = "xxlarge",
-        num = 10,
+        q=q,
+        imgSize="xxlarge",
+        num=10,
         cx='008967187802311874018:z5qkxza9s1k',
-        searchType = "image"
+        searchType="image"
     ).execute()
     for image in res['items']:
-        photo = Photo(title=image['title'])
+        photo = game.models.Photo(title=image['title'])
         name = urlparse(image['link']).path.split('/')[-1]
-        content = urllib.urlretrieve(image['link'])
-        photo.image.save(name, File(open(content[0])), save=True)
-        if player:
-            player.photos.add(photo)
-            player.save()
-        elif team:
-            team.photo.add(photo)
-            team.save()
-        elif game:
-            game.images.add(photo)
-            game.save()
-        print image['link']
+        try:
+            content = urllib.urlretrieve(image['link'])
+        except:
+            content = None
+        if content:
+            photo.image.save(name, File(open(content[0])), save=True)
+            if player:
+                player.photos.add(photo)
+                player.save()
+            elif team:
+                team.photo.add(photo)
+                team.save()
+            elif g:
+                g.images.add(photo)
+                g.save()
+            print image['link']
     sleep(1)
     return res
 
 
-def collect_video_game(game, live=False, test=False, only_video=False):
+def collect_video_game(g, live=False, test=False, only_video=False):
     black_list = ['UCOIJLZuKMOZB8dsuAyRF-zg', 'UCOjl_Kyky0OHv7ToYpyKiZw',
                   'UCMmVPVb0BwSIOWVeDwlPocQ', 'UC76VPTjEuP011r66am5FhFg',
                   'UC30avO2n6knAFiH2c8e4qiw', 'UCP4A2nemKn_Gmd4ODKQkmvA',
@@ -200,20 +331,29 @@ def collect_video_game(game, live=False, test=False, only_video=False):
     delta = datetime.timedelta(120)
     if live:
         delta = datetime.timedelta(24)
-    begin_date = game.pub_date.isoformat() + 'T00:00:00Z'
-    end_date = game.pub_date + delta
+    begin_date = g.pub_date.isoformat() + 'T00:00:00Z'
+    end_date = g.pub_date + delta
     end_date = end_date.isoformat() + 'T00:00:00Z'
-    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+    youtube = build(
+        YOUTUBE_API_SERVICE_NAME,
+        YOUTUBE_API_VERSION,
+        developerKey=DEVELOPER_KEY
+    )
 
     # Call the search.list method to retrieve results matching the specified
     # query term.
     kwargs = {}
     if live:
         kwargs['videoDuration'] = 'long'
-        kwargs['q'] = '%s %s' % (game.team1.title, game.team2.title)
+        kwargs['q'] = '%s %s' % (g.team1.title, g.team2.title)
         kwargs['eventType'] = 'completed'
     else:
-        kwargs['q'] = 'Highlights %s %s %d %d' % (game.team1.title, game.team2.title, game.goal_team1, game.goal_team2)
+        rezumat = 'Highlights'
+        if g.campionat.country == u'România':
+            rezumat = 'Rezumat'
+        kwargs['q'] = '%s %s %s %d %d' % (
+            rezumat, g.team1.title, g.team2.title, g.goal_team1, g.goal_team2
+        )
     kwargs['part'] = 'id,snippet'
     kwargs['type'] = 'video'
     kwargs['maxResults'] = 50
@@ -243,21 +383,24 @@ def collect_video_game(game, live=False, test=False, only_video=False):
             image_url = thumbs['high']['url']
             if not test:
                 if not only_video:
-                    photo = Photo(title=title)
+                    photo = game.models.Photo(title=title)
                     name = urlparse(image_url).path.split('/')[-1]
                     content = urllib.urlretrieve(image_url)
                     photo.image.save(name, File(open(content[0])), save=True)
-                    game.images.add(photo)
+                    g.images.add(photo)
+                    if g.news_set.count():
+                        news = g.news_set.first()
+                        news.photo = photo
+                        news.save()
                 player = video['player']['embedHtml']
                 if search_result['snippet']['channelId'] not in black_list:
                     if not live and not saved:
-                        game.video = player
+                        g.video = player
                         saved = True
                     elif not saved:
-                        game.live = player
+                        g.live = player
                         saved = True
-                    game.save()
+                    g.save()
             else:
                 print title
-    return 'ok'
-
+    return True

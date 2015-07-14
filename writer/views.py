@@ -33,7 +33,10 @@ def base(request, campionat=None):
         campionat_item = Campionat.objects.get(slug=campionat)
         news_args &= Q(game__campionat=campionat_item)
         games_args &= Q(campionat=campionat_item)
-        clasament_list = [campionat_item.clasament()]
+        try:
+            clasament_list = [campionat_item.clasament()]
+        except:
+            clasament_list = []
     live = request.GET.get('live', False)
     if live:
         news_args &= Q(game__live__isnull=False)
@@ -53,7 +56,10 @@ def base(request, campionat=None):
     if not campionat:
         clasament_list = []
         for campionat in campionat_list:
-            clasament_list.append(campionat.clasament())
+            try:
+                clasament_list.append(campionat.clasament())
+            except:
+                pass
     hero = hero_of_the_day(day=last_game.pub_date, campionat=campionat_item)
     return render(request, 'index.html',
                   {'news_list': newses, 'campionat_list': campionat_list,
@@ -67,9 +73,13 @@ def news(request, campionat=None, title=None):
         slug=title
     ).first()
     campionat_list = Campionat.objects.all()
-    clasament_list = [news_item.game.render_clasament()]
-    if news_item.game != news_item.game.campionat.game_set.first():
-        clasament_list.append(news_item.game.campionat.clasament())
+    clasament_list = []
+    try:
+        clasament_list = [news_item.game.render_clasament()]
+        if news_item.game != news_item.game.campionat.game_set.first():
+            clasament_list.append(news_item.game.campionat.clasament())
+    except:
+        pass
     hero = news_item.game.hero()
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list,
@@ -94,7 +104,9 @@ def team(request, campionat=None, team=None):
 
 def rss(request, campionat=None):
     args = Q()
-    article_list = News.objects.order_by('-pub_date')[0:30]
+    article_list = News.objects.filter(
+        Q(pub_date__gte=datetime.date.today())
+    ).order_by('-pub_date')
     template = get_template('rss.xml')
     return HttpResponse(template.render(Context(locals())),
                         content_type="application/rss+xml")
