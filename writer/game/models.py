@@ -949,7 +949,14 @@ class Game(models.Model):
                 first = True
             else:
                 first = False
-            frase = random.sample(GoalGroupFrase.objects.filter(first=first).exclude(id__in=self.used['group']).all(), 1)[0]
+            args = Q(first=first)
+            if group[-1].equal():
+                args &= Q(equal=True)
+            elif group[-1].reverse():
+                args &= Q(reverse=True)
+            frase = random.sample(GoalGroupFrase.objects.filter(args).exclude(
+                id__in=self.used['group']
+            ).all(), 1)[0]
             goal_group_frase = Template(frase.title)
             team = group[0].team
             recipient = group[0].recipient
