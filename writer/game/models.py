@@ -1225,6 +1225,10 @@ class GoalGroupFrase(models.Model):
     triple = models.BooleanField(default=False)
     #: have someone from the authors mark more then 3 goals in this game?
     more = models.BooleanField(default=False)
+    #: after last goal is equal?
+    equal = models.BooleanField(default=False)
+    #: after last goal is reverse of score?
+    reverse = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.title

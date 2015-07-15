@@ -10,8 +10,13 @@
         <meta name="viewport" content="user-scalable=0,width=device-width,height=device-height,initial-scale=1,maximum-scale=1" />
         {% block meta %}
             <meta name="google-site-verification" content="UGdJvEEDtGolTpkepTJWC5uOpCUX7ylhU4irlirJ7bY" />
-            <meta name="description" content="Cele mai operative ştiri despre meciurile din ligile superioare ale {% for campionat in campionat_list %}{{ campionat }}{% if not forloop.last %}, {% endif %}{% endfor %}.">
-            <meta name="keywords" content="fotbal, highlights, rezumate, {% for campionat in campionat_list %}{{ campionat.title }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+            {% if campionat_item %}
+                <meta name="description" content="Cele mai operative ştiri despre meciurile din {{ campionat_item.title }}, {{ campionat_item }}.">
+                <meta name="keywords" content="fotbal, highlights, rezumate, {{ campionat_item.title }}, {{ campionat_item }}">
+            {% else %}
+                <meta name="description" content="Cele mai operative ştiri despre meciurile din ligile superioare ale {% for campionat in campionat_list %}{{ campionat }}{% if not forloop.last %}, {% endif %}{% endfor %}.">
+                <meta name="keywords" content="fotbal, highlights, rezumate, {% for campionat in campionat_list %}{{ campionat.title }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+            {% endif %}
         {% endblock %}
         <link rel="alternate" href="/rss/" type="application/rss+xml" title="RSS" />
         <!-- CSS FILES -->

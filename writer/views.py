@@ -64,7 +64,8 @@ def base(request, campionat=None):
     return render(request, 'index.html',
                   {'news_list': newses, 'campionat_list': campionat_list,
                    'game_list': game_list, 'image_list': image_list,
-                   'clasament_list': clasament_list, 'hero': hero})
+                   'clasament_list': clasament_list, 'hero': hero,
+                   'campionat_item': campionat_item})
 
 
 def news(request, campionat=None, title=None):
