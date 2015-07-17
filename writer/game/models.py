@@ -931,6 +931,33 @@ class Game(models.Model):
             self.used['begin'] = frase.id
         return ret
 
+    def previouse_game_frase(self, debug=False):
+        args = Q()
+        precedent_game_data = self.precedent_game()
+        res = ''
+        if precedent_game_data:
+            (pg, delta) = precedent_game_data
+            loser = pg.loser()
+            (lose, success, equal) = (False, False, False)
+            if loser:
+                lose = True
+            if self.winer() == loser:
+                success = True
+            if not self.loser():
+                equal = True
+            if success and equal:
+                success = False
+            args &= Q(loser=lose) & Q(succes=success) & Q(equal=equal)
+            if debug:
+                print 'params', lose, success, equal
+            frase = random.sample(PreviouseGameFrase.objects.filter(args).all(), 1)[0]
+            tpl_string = frase.title
+            tpl = Template(tpl_string)
+            if debug:
+                res += '(%d)' % frase.id
+            res += tpl.render(Context({'game': pg, 'loser': loser, 'delta': delta}))
+        return res
+
     def first_goal_frase(self, debug=False):
         args = Q()
         args &= Q(only=self.only())
@@ -1127,19 +1154,11 @@ class Game(models.Model):
             self.used = ast.literal_eval(self.used_frases)
         title = self.title_frase(debug)
         begin_frase = self.title_frase(debug, begin=True)
+        precedent_frase = self.previouse_game_frase(debug)
         """
         if self.lupta_loc():
             begin_frase += u' În această seară cele două echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
         """
-        precedent_game_data = self.precedent_game()
-        precedent_frase = ''
-        if precedent_game_data:
-            (pg, delta) = precedent_game_data
-            loser = pg.loser()
-            if loser:
-                precedent_frase = u'Acum %d luni meciul dintre cele două echipe s-a terminat cu %s. %s are acum şansa de a-şi lua revanşa.' % (delta, pg.score(), loser.title)
-            else:
-                precedent_frase = u'Egalul obţinut în meciul de acum %d luni nu pare a fi comod nici uneia dintre echipe. Astăzi ele au ocazia de a decide totuşi cine dintre ele este mai puternică.' % delta
         first_goal_frase = ''
         if self.goals.count() > 0:
             first_goal_frase = self.first_goal_frase(debug)

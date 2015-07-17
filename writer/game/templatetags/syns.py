@@ -2,6 +2,7 @@ from django import template
 from writer.game.models import Synonims
 from django.db.models import Q
 from random import sample
+from django.core.urlresolvers import reverse
 
 register = template.Library()
 
@@ -47,3 +48,12 @@ def ch(value):
     return sample(words_list, 1)[0]
 
 register.filter('ch', ch)
+
+
+def gameurl(value, game):
+    news = game.news_set.first()
+    if news:
+        return u'<a href="%s" title="%s" target="_blank">%s</a>' % (reverse('news', kwargs={'campionat': game.campionat.slug, 'title': news.slug}), unicode(game), value)
+    return value
+
+register.filter('gameurl', gameurl)
