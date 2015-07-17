@@ -6,6 +6,8 @@ from django.template.loader import get_template
 from django.http import HttpResponse
 from django.template import Context
 import datetime
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 
 def hero_of_the_day(day=datetime.date.today(), campionat=None):
@@ -30,7 +32,7 @@ def base(request, campionat=None):
     games_args = Q()
     campionat_item = None
     if campionat:
-        campionat_item = Campionat.objects.get(slug=campionat)
+        campionat_item = get_object_or_404(Campionat, slug=campionat)
         news_args &= Q(game__campionat=campionat_item)
         games_args &= Q(campionat=campionat_item)
         try:
@@ -73,6 +75,8 @@ def news(request, campionat=None, title=None):
         game__campionat__slug=campionat,
         slug=title
     ).first()
+    if not news_item:
+        raise Http404
     campionat_list = Campionat.objects.all()
     clasament_list = []
     try:
@@ -91,6 +95,8 @@ def team(request, campionat=None, team=None):
     team = Team.objects.filter(
         Q(slug=team) & Q(campionat__slug=campionat)
     ).first()
+    if not team:
+        raise Http404
     clasament_list = [team.campionat.clasament()]
     player_list = list(set(list(Player.objects.filter(
         Q(goal__team=team) & Q(goal__auto=False)).all())))
@@ -103,11 +109,13 @@ def team(request, campionat=None, team=None):
                                          'game_list': game_list})
 
 
-def rss(request, campionat=None):
+def rss(request, campionat=None, team=None):
     args = Q()
-    article_list = News.objects.filter(
-        Q(pub_date__gte=datetime.date.today())
-    ).order_by('-pub_date')
+    if campionat:
+        args &= Q(game__campionat__slug=campionat)
+        if team:
+            args &= (Q(game__team1__slug=team) | Q(game__team2__slug=team))
+    article_list = News.objects.filter(args).order_by('-pub_date')[0:50]
     template = get_template('rss.xml')
     return HttpResponse(template.render(Context(locals())),
                         content_type="application/rss+xml")

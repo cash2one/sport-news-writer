@@ -18,6 +18,7 @@ from django.template.loader import get_template
 
 # Create your models here.
 
+default_used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
 
 def mk_sent(what, verb, when, who, how):
     return "%s %s %s %s %s" % (what, verb, when, who, how)
@@ -619,7 +620,7 @@ class Game(models.Model):
     images = models.ManyToManyField(Photo, blank=True)
     video = models.TextField(blank=True, null=True)
     live = models.TextField(blank=True, null=True)
-    used_frases = models.TextField(default='{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}')
+    used_frases = models.TextField(default=default_used_frases)
 
     class Meta:
         index_together = [
@@ -1109,7 +1110,7 @@ class Game(models.Model):
         news = None
         if regenerate and self.news_set.first():
             news = self.news_set.first()
-            self.used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
+            self.used_frases = default_used_frases
             self.save()
             self.used = ast.literal_eval(self.used_frases)
         title = self.title_frase(debug)
@@ -1153,7 +1154,7 @@ class Game(models.Model):
                 news.text = news_text
                 news.save()
         else:
-            self.used = {"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}
+            self.used = ast.literal_eval(default_used_frases)
         self.stop()
         return title, news_text
 
