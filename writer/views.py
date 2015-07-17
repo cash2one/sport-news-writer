@@ -91,6 +91,21 @@ def news(request, campionat=None, title=None):
                    'clasament_list': clasament_list, 'hero': hero})
 
 
+def teams(request, campionat=None):
+    campionat = get_object_or_404(Campionat, slug=campionat)
+    team_list = campionat.team_set.all()
+    clasament_list = []
+    try:
+        clasament_list = [campionat.clasament()]
+    except:
+        pass
+    campionat_list = Campionat.objects.all()
+    return render(request, 'teams.html', {'team_list': team_list,
+                                          'clasament_list': clasament_list,
+                                          'campionat_list': campionat_list,})
+
+
+
 def team(request, campionat=None, team=None):
     team = Team.objects.filter(
         Q(slug=team) & Q(campionat__slug=campionat)

@@ -2,7 +2,7 @@ from django.contrib import admin
 from models import Photo, Season, Campionat, Player, Couch, Team, Goal, Game
 from models import News, Carton
 from models import TitleFrase, FirstGoalFrase, RegularGoalFrase, GoalGroupFrase
-from models import LastGoalFrase, Conclusion, Synonims
+from models import LastGoalFrase, Conclusion, Synonims, PreviouseGameFrase
 
 # Register your models here.
 
@@ -25,6 +25,8 @@ class TitleFraseAdmin(admin.ModelAdmin):
 admin.site.register(TitleFrase, TitleFraseAdmin)
 class FirstGoalFraseAdmin(admin.ModelAdmin):
     list_display = ('title', 'min_minute', 'max_minute', 'only')
+
+admin.site.register(PreviouseGameFrase)
 
 admin.site.register(FirstGoalFrase, FirstGoalFraseAdmin)
 class RegularGoalFraseAdmin(admin.ModelAdmin):

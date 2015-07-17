@@ -865,6 +865,18 @@ class Game(models.Model):
             goals.append(group)
         return goals
 
+    def precedent_game(self):
+        game = Game.objects.filter(
+            Q(pub_date__lt=self.pub_date) &
+            (
+                (Q(team1=self.team1) & Q(team2=self.team2)) |
+                (Q(team1=self.team2) & Q(team2=self.team1))
+            )
+        ).first()
+        if game:
+            return game, (self.pub_date - game.pub_date).days/30
+        return None
+
     #############
     # Templates #
     #############
@@ -1119,6 +1131,15 @@ class Game(models.Model):
         if self.lupta_loc():
             begin_frase += u' În această seară cele două echipe au luptat pentru dreptul de a ocupa locul ' + str(max(self.team1.loc(self.id), self.team2.loc(self.id))) + '. '
         """
+        precedent_game_data = self.precedent_game()
+        precedent_frase = ''
+        if precedent_game_data:
+            (pg, delta) = precedent_game_data
+            loser = pg.loser()
+            if loser:
+                precedent_frase = u'Acum %d luni meciul dintre cele două echipe s-a terminat cu %s. %s are acum şansa de a-şi lua revanşa.' % (delta, pg.score(), loser.title)
+            else:
+                precedent_frase = u'Egalul obţinut în meciul de acum %d luni nu pare a fi comod nici uneia dintre echipe. Astăzi ele au ocazia de a decide totuşi cine dintre ele este mai puternică.' % delta
         first_goal_frase = ''
         if self.goals.count() > 0:
             first_goal_frase = self.first_goal_frase(debug)
@@ -1139,8 +1160,9 @@ class Game(models.Model):
                     <p>%s</p>
                     <p>%s</p>
                     <p>%s</p>
+                    <p>%s</p>
                     <p><b>%s</b></p>
-                    """ % (html_parser.unescape(begin_frase), html_parser.unescape(first_goal_frase), html_parser.unescape(reg_goals), html_parser.unescape(last_goal_frase), html_parser.unescape(conclusion))
+                    """ % (html_parser.unescape(begin_frase), html_parser.unescape(precedent_frase), html_parser.unescape(first_goal_frase), html_parser.unescape(reg_goals), html_parser.unescape(last_goal_frase), html_parser.unescape(conclusion))
         news_text = typo(news_text)
         if not debug:
             if not news:
@@ -1201,6 +1223,18 @@ class FirstGoalFrase(models.Model):
         return ret
 
 
+class PreviouseGameFrase(models.Model):
+    #: the frase itself
+    title = models.TextField()
+    #: someone have lose in this game?
+    loser = models.BooleanField()
+    #: the loser wins?
+    succes = models.BooleanField()
+    #: or it was an equal?
+    equal = models.BooleanField()
+
+    def __unicode__(self):
+        return self.title
 
 
 class RegularGoalFrase(models.Model):
