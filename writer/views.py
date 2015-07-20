@@ -8,9 +8,41 @@ from django.template import Context
 import datetime
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+from django.core.urlresolvers import reverse
+
+
+def create_breadcrumbs(crumbs):
+    """
+    This is a function for creating breadcrumbs.
+
+    :param crumbs: a list of locations and names. Something like [('/team/1/', 'Barcelona'), ('/team/1/2/', 'Ronaldinho')]
+    :returns: an html formated breadcrumbs
+    :rtype: str
+    """
+    ret = '<a href="/">/</a> &rarr; '
+    number_of_elements = len(crumbs) - 1
+    for i, element in enumerate(crumbs):
+        (url, name) = element
+        if i < number_of_elements:
+            ret += '<a href="%s">%s</a> ' % (url, name)
+            ret += '&rarr; '
+        else:
+            ret += name
+    return ret
 
 
 def hero_of_the_day(day=datetime.date.today(), campionat=None):
+    """
+    This function calculate the hero of the day. For each game we can calculate the hero by using the method game.hero().
+    By default we think that we are interested in today.
+
+    :param day: a day for calculating hero
+    :type day: datetime.date
+    :param campionat: the campionat for calculating hero. If is None, then we calculate for all leagues.
+    :type campionat: writer.game.models.Campionat
+    :returns: a dict with player, the number of points and datas about why we think it's an hero.
+    :rtype: dict
+    """
     args = Q(pub_date=day)
     if campionat:
         args &= Q(campionat=campionat)
@@ -28,6 +60,7 @@ def hero_of_the_day(day=datetime.date.today(), campionat=None):
 
 
 def base(request, campionat=None):
+    crumbs = ''
     news_args = Q()
     games_args = Q()
     campionat_item = None
@@ -63,11 +96,15 @@ def base(request, campionat=None):
             except:
                 pass
     hero = hero_of_the_day(day=last_game.pub_date, campionat=campionat_item)
+    if campionat_item:
+        crumbs = create_breadcrumbs([
+            (None, campionat_item.title)
+        ])
     return render(request, 'index.html',
                   {'news_list': newses, 'campionat_list': campionat_list,
                    'game_list': game_list, 'image_list': image_list,
                    'clasament_list': clasament_list, 'hero': hero,
-                   'campionat_item': campionat_item})
+                   'campionat_item': campionat_item, 'crumbs': crumbs})
 
 
 def news(request, campionat=None, title=None):
@@ -86,9 +123,14 @@ def news(request, campionat=None, title=None):
     except:
         pass
     hero = news_item.game.hero()
+    crumbs = create_breadcrumbs([
+        (reverse('campionat', kwargs={'campionat': news_item.game.campionat.slug}), news_item.game.campionat.title),
+        (None, news_item.title)
+    ])
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list,
-                   'clasament_list': clasament_list, 'hero': hero})
+                   'clasament_list': clasament_list, 'hero': hero,
+                   'crumbs': crumbs})
 
 
 def teams(request, campionat=None):
@@ -118,10 +160,14 @@ def team(request, campionat=None, team=None):
     game_list = Game.objects.filter(
         Q(team1=team) | Q(team2=team)
     ).order_by('-pub_date')
+    crumbs = create_breadcrumbs([
+        (reverse('campionat', team.campionat.slug), team.campionat.title),
+        (None, team.title)
+    ])
     return render(request, 'team.html', {'team': team,
                                          'clasament_list': clasament_list,
                                          'player_list': player_list,
-                                         'game_list': game_list})
+                                         'game_list': game_list, 'crumbs': crumbs})
 
 
 def rss(request, campionat=None, team=None):
