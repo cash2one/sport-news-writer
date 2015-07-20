@@ -170,6 +170,8 @@ class Team(models.Model):
     action = models.CharField(max_length=128, blank=True, null=True)
     #: The league where the team play
     campionat = models.ForeignKey(Campionat)
+    #: The seasons when this team play in the campionat
+    seasons = models.ManyToManyField(Season)
     #: A list of fotos of team
     photo = models.ManyToManyField(Photo)
 
@@ -705,6 +707,7 @@ class Game(models.Model):
             goals_in = 0
             goals_out = 0
             for game in Game.objects.filter(
+                Q(season=self.season) &
                 Q(pub_date__lte=self.pub_date) & Q(id__lte=self.id) &
                 (Q(team1=team) | Q(team2=team))
             ).all():
@@ -736,10 +739,10 @@ class Game(models.Model):
         self.save()
         return res
 
-    def clasament(self):
-        if not self.classament or len(self.classament) < 10:
+    def clasament(self, regenerate=False):
+        if not self.classament or (len(self.classament) < 10) or regenerate:
             clasament = []
-            for team in self.campionat.team_set.all():
+            for team in self.campionat.team_set.filter(seasons=self.season).all():
                 points = team.points(self.id)
                 clasament.append([points, team.id])
             clasament.sort()
