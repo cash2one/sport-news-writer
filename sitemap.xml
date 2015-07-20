@@ -3,7 +3,7 @@
     <url>
         <loc>http://www.fotbal.md/</loc>
         <priority>0.9</priority>
-        <lastmod>2015-07-14</lastmod>
+        <lastmod>2015-07-19</lastmod>
         <changefreq>hourly</changefreq>
     </url>
     
@@ -692,6 +692,90 @@
         	<priority>0.4</priority>
         </url>
     
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/echipe/Anzhi-Makhachkala/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/echipe/Krylya-Sovetov-Samara/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Si-au-rasfatat-suporterii-cu-goluri-Echipele-au-marcat-de-15-ori-in-meciul-Astra-Giurgiu-1-5-Tirgu-Mures/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Infrangere-la-limita-Anzhi-Makhachkala-a-cedat-la-un-singur-gol-diferenta-in-fata-lui-Krylya-Sovetov-Samara/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Si-au-rasfatat-suporterii-cu-goluri-Echipele-au-marcat-de-10-ori-in-meciul-CFR-Cluj-1-0-ACS-Poli-Timisoara/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Petar-Skuletic-i-a-adus-lui-Lokomotiv-Moscow-victoria-in-fata-celor-de-la-Mordovya/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Dinamo-Moscow-au-cedat-un-singur-gol-in-partida-cu-Zenit-St-Petersburg/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/N-a-fost-ziua-lor-Pandurii-au-cedat-cu-0-3-in-meciul-cu-Steaua-Bucuresti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Nimeni-n-a-fost-mai-bun-astazi-in-partida-FK-Rostov-1-1-Terek-Grozny/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Si-au-rasfatat-suporterii-cu-goluri-Echipele-au-marcat-de-11-ori-in-meciul-Petrolul-Ploiesti-1-1-FC-Voluntari/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Spectacol-de-zile-mari-in-partida-care-s-a-finalizat-acum-cateva-clipe-dintre-CSKA-Moscow-Rubin-Kazan/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Succes-pe-final-de-meci-pentru-Dinamo-Bucuresti-in-fata-celor-de-la-CS-Universitatea-Craiova/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Spartak-Moscow-a-incheiat-la-egalitate-2-2-meciul-de-astazi-cu-FC-Ufa/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Infrangere-la-limita-Concordia-Chiajna-a-cedat-la-un-singur-gol-diferenta-in-fata-lui-CSMS-Iasi/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
     
         <url>
             <loc>http://www.fotbal.md/Romania-Liga1/ACS-Poli-Timisoara-au-cedat-un-singur-gol-in-partida-cu-Pandurii/</loc>
@@ -779,6 +863,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Italia-Serie-A/Cesena-isi-continua-parcursul-de-INSUCCES-al-5-meci-pierdut-consecutiv/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Fara-mari-emotii-Ural-isi-fortifica-pozitiile-in-clasament-dupa-meciul-cu-Terek-Grozny/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -971,6 +1061,30 @@
     
         <url>
             <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Umilinta-totala-Liverpool-a-lasat-5-goluri-fara-raspuns-in-partida-cu-Stoke-City/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Cu-un-scor-de-3-la-1-au-finalizat-astazi-Torpedo-Moscow-si-Ural/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/Fara-drept-de-apel-Real-Madrid-ii-invinge-cu-usurinta-pe-cei-de-la-Getafe/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Cate-un-punct-au-luat-astazi-FC-Cologne-si-Wolfsburg/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Cu-un-scor-de-1-la-3-au-plecat-acasa-astazi-Borussia-Moenchengladbach-si-Augsburg/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -1415,6 +1529,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/N-a-fost-ziua-lor-Spartak-Moscow-au-cedat-cu-4-2-in-meciul-cu-Terek-Grozny/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Cu-un-scor-de-2-la-2-au-plecat-acasa-astazi-ChievoVerona-si-Hellas-Verona/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -2333,6 +2453,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Succes-pe-final-de-meci-pentru-Manchester-City-in-fata-celor-de-la-Aston-Villa/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Succes-pe-sfarsit-pentru-FC-Ufa-in-jocul-contra-Kuban-Krasnodar/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -3910,6 +4036,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Cu-un-scor-de-4-la-2-au-plecat-acasa-astazi-FC-Cologne-si-Eintracht-Frankfurt/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Italia-Serie-A/Cate-un-punct-si-nici-un-gol-marcat-ChievoVerona-0-0-Roma/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -5380,6 +5512,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/Granada-a-evitat-infrangerea-in-ultimul-moment/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Spania-Primera-Division/Cu-un-scor-de-1-la-1-s-au-despartit-astazi-Athletic-Bilbao-si-Malaga/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -6221,6 +6359,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Cu-un-scor-de-2-la-2-s-au-despartit-astazi-Liverpool-si-Arsenal/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Queens-Park-Rangers-a-rupt-un-triumf-in-ultimul-moment-in-meciul-cu-West-Bromwich-Albion/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -7156,6 +7300,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Bayer-Leverkusen-a-demolat-FC-Cologne-in-meciul-care-s-a-finalizat-acum-cateva-minute-scor-5-1/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Italia-Serie-A/ChievoVerona-si-Lazio-au-plecat-acasa-fara-a-stabili-un-invingator/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -7444,6 +7594,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Au-pierdut-la-o-diferenta-de-2-goluri-Borussia-Moenchengladbach-1-3-Eintracht-Frankfurt/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Germania-Bundesliga/Hertha-Berlin-i-a-invins-cu-emotii-pe-cei-de-la-FC-Cologne/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -7720,6 +7876,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Triumf-pe-final-de-meci-pentru-FC-Cologne-in-partida-contra-Hoffenheim/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Remiza-nula-in-partida-West-Ham-United-Aston-Villa/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -7901,6 +8063,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Cu-un-scor-de-1-la-1-au-incheiat-astazi-Rubin-Kazan-si-Amkar/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Nimeni-n-a-fost-mai-bun-astazi-in-partida-Kuban-Krasnodar-3-3-Spartak-Moscow/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -8213,6 +8381,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Au-pierdut-la-o-diferenta-de-2-goluri-Dinamo-Moscow-0-2-Rubin-Kazan/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Balonul-a-fost-purtat-astazi-din-poarta-n-poarta-la-meciul-SSC-Napoli-6-2-Hellas-Verona/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -8860,6 +9034,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Incredibil-FC-Cologne-nu-si-poate-reveni-a-pierdut-al-3-meci-consecutiv/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Italia-Serie-A/Fara-mari-emotii-AC-Milan-isi-fortifica-pozitiile-in-clasament-dupa-partida-cu-ChievoVerona/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -9280,6 +9460,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Cu-un-scor-de-3-la-3-au-finalizat-astazi-SSC-Napoli-si-Palermo/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Germania-Bundesliga/La-limita-Borussia-Moenchengladbach-1-0-Hamburger-SV/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -9443,6 +9629,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Spania-Primera-Division/N-a-fost-ziua-lor-Getafe-au-cedat-cu-0-3-in-meciul-cu-Valencia/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Cu-un-scor-de-2-la-3-au-incheiat-astazi-ChievoVerona-si-Parma/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -9827,6 +10019,12 @@
     
         <url>
             <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/N-a-fost-ziua-lor-FC-Krasnodar-au-cedat-cu-0-2-in-meciul-cu-FC-Ufa/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Inca-o-reusita-la-activ-pentru-Zenit-St-Petersburg-Seria-continua/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -10282,6 +10480,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Cu-un-scor-de-2-la-2-au-incheiat-astazi-Paderborn-si-Mainz-05/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Germania-Bundesliga/I-au-lasat-pe-ultima-suta-de-metri-fara-triumf-Borussia-Moenchengladbach-a-egalat-inainte-de-fluierul-arbitrului-Borussia-Moenchengladbach-1-1-VfB-Stuttgart/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -10534,6 +10738,12 @@
         </url>
     
         <url>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Incordare-maxima-soldata-cu-un-egal-in-partida-West-Bromwich-Albion-Sunderland/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
             <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Au-pierdut-la-o-diferenta-de-2-goluri-Ural-0-2-Torpedo-Moscow/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
@@ -10691,6 +10901,18 @@
     
         <url>
             <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Cate-un-punct-si-nici-un-gol-marcat-Lokomotiv-Moscow-0-0-FC-Krasnodar/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Cu-un-scor-de-4-la-1-au-plecat-acasa-astazi-CSKA-Moscow-si-Torpedo-Moscow/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Ural-au-cedat-un-singur-gol-in-meciul-cu-Mordovya/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>

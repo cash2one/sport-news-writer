@@ -835,7 +835,7 @@ class Game(models.Model):
         return abs(int(self.goal_team1) - int(self.goal_team2))
 
     def total_goals(self):
-        return self.goal_team1 + self.goal_team2
+        return int(self.goal_team1) + int(self.goal_team2)
 
     def only(self):
         if self.total_goals() == 1:
