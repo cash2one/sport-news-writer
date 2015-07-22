@@ -3,7 +3,7 @@
     <url>
         <loc>http://www.fotbal.md/</loc>
         <priority>0.9</priority>
-        <lastmod>2015-07-19</lastmod>
+        <lastmod>2015-07-20</lastmod>
         <changefreq>hourly</changefreq>
     </url>
     
@@ -704,6 +704,24 @@
         	<priority>0.4</priority>
         </url>
     
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Cate-un-punct-au-luat-astazi-Botosani-si-FC-Viitorul-Constanta/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Cu-un-scor-de-0-la-2-au-finalizat-astazi-Kuban-Krasnodar-si-Ural/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/FC-Krasnodar-a-rupt-un-succes-in-ultimul-moment-in-intalnirea-cu-Amkar/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
     
         <url>
             <loc>http://www.fotbal.md/Romania-Liga1/Si-au-rasfatat-suporterii-cu-goluri-Echipele-au-marcat-de-15-ori-in-meciul-Astra-Giurgiu-1-5-Tirgu-Mures/</loc>

@@ -126,8 +126,12 @@ class Player(models.Model):
     goals_in_season = models.IntegerField(default=0)
     #: The total number of goals marked
     goals_total = models.IntegerField(default=0)
-    #: The nationality of player (will be used in making sinonims of his name
+    #: The nationality of player (will be used in making sinonims of his name)
     nationality = models.CharField(max_length=128, blank=True, null=True)
+    #: The position of player (like keeper)
+    position = models.CharField(max_length=128, blank=True, null=True)
+    #: The number of player (for example Alessandro Del Pierro is 7)
+    number = models.IntegerField(blank=True, null=True)
     #: A list of fotos of player
     photos = models.ManyToManyField(Photo, blank=True, null=True)
 
