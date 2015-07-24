@@ -178,6 +178,8 @@ class Team(models.Model):
     seasons = models.ManyToManyField(Season)
     #: A list of fotos of team
     photo = models.ManyToManyField(Photo)
+    #: Some teams can receive penalities
+    penalities = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.title
@@ -382,7 +384,7 @@ class Team(models.Model):
                 pass
             else:
                 points += 1
-        return points
+        return points - self.penalities
 
     def loc(self, last_id=None):
         loc = -1
