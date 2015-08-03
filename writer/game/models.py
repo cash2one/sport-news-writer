@@ -15,6 +15,7 @@ import HTMLParser
 import writer.collect
 import datetime
 from django.template.loader import get_template
+from writer.promo import get_api
 
 # Create your models here.
 
@@ -890,7 +891,9 @@ class Game(models.Model):
     # Templates #
     #############
     def title_frase(self, debug=False, begin=False):
-        exclude = Q(id=self.used['title'])
+        exclude = Q()
+        if begin:
+            exclude = Q(id=self.used['title'])
         not_null = Q(title__isnull=False)
         diff = Q(min_score_diference__lte=self.score_diference()) & Q(max_score_diference__gte=self.score_diference())
         diff_null = Q(min_score_diference__isnull=True) & Q(max_score_diference__isnull=True)
@@ -934,10 +937,13 @@ class Game(models.Model):
         if debug:
             ret += '(%d)' % frase.id
         ret += tpl.render(Context({'game': self, 'wins': wins, 'loses': loses}))
-        if not begin:
-            self.used['title'] = frase.id
-        else:
-            self.used['begin'] = frase.id
+        try:
+            if not begin:
+                self.used['title'] = frase.id
+            else:
+                self.used['begin'] = frase.id
+        except:
+            pass
         return ret
 
     def previouse_game_frase(self, debug=False):
@@ -1206,7 +1212,7 @@ class Game(models.Model):
         else:
             self.used = ast.literal_eval(default_used_frases)
         self.stop()
-        return title, news_text
+        return news
 
 
 class TitleFrase(models.Model):
@@ -1341,6 +1347,19 @@ class News(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def post_to_facebook(self):
+        attachment = {
+            'name': self.title.encode('utf-8'),
+            'link': 'http://www.fotbal.md%s' % reverse('news', kwargs={'campionat': self.game.campionat.slug, 'title': self.slug}),
+            'caption': self.game.title_frase().encode('utf-8'),
+            'description': '%s %s' % (self.game.title_frase().encode('utf-8'), self.game.previouse_game_frase().encode('utf-8')),
+            'picture': 'http://www.fotbal.md%s' % self.photo.image.url
+        }
+        graph = get_api()
+        graph.put_wall_post(message='', attachment=attachment)
+
+
 
 
 

@@ -289,7 +289,8 @@ def collect(campionat, load_date=False):
                         if not create_goal(score_row, g):
                             create_carton(score_row, g)
                     print g.goal_team1, g.goal_team2
-                    g.news()
+                    news = g.news()
+                    news.post_to_facebook()
     return 'ok'
 
 
