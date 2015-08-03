@@ -161,7 +161,7 @@ def team(request, campionat=None, team=None):
         Q(team1=team) | Q(team2=team)
     ).order_by('-pub_date')
     crumbs = create_breadcrumbs([
-        (reverse('campionat', team.campionat.slug), team.campionat.title),
+        (reverse('campionat', kwargs={'campionat': team.campionat.slug}), team.campionat.title),
         (None, team.title)
     ])
     return render(request, 'team.html', {'team': team,
