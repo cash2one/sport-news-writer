@@ -26,6 +26,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
+SITE_ID = 1
+
 
 # Application definition
 
@@ -148,3 +150,8 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+FACEBOOK_PAGE_ID = 421836471279695
+FACEBOOK_APP_ID = 416030911931920
+FACEBOOK_APP_SECRET = '494cea1eff392b2ac714fbc2f7c4278b'
+FACEBOOK_ACCESS_TOKEN = 'CAAF6YL64phABAJPyyFFTb2lmPE5BpYZCEDWivPkDTzzgYdg17T4IM5veZBKZASK7ZCUSGsMuQxXAEVLt3OmmZCfg445enPHEjje7tNQQS6ZBiMX0brBjkfVZARqZBn6zpAjABfWorSa4wK00Fj3cQ2vIg2CLbKBOLUzGO9FkZAedchpFncLds9NX8UkESZCjJcbt8k8ZBAr2KgKNWhpQyWl40Yw'

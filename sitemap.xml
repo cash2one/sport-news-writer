@@ -3,7 +3,7 @@
     <url>
         <loc>http://www.fotbal.md/</loc>
         <priority>0.9</priority>
-        <lastmod>2015-07-20</lastmod>
+        <lastmod>2015-08-02</lastmod>
         <changefreq>hourly</changefreq>
     </url>
     
@@ -704,6 +704,174 @@
         	<priority>0.4</priority>
         </url>
     
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Nimeni-n-a-fost-mai-bun-astazi-in-partida-Tirgu-Mures-0-0-CS-Universitatea-Craiova/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Cate-un-punct-si-nici-un-gol-marcat-FK-Rostov-0-0-FC-Krasnodar/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Remiza-pe-ultima-suta-de-metri-datorata-lui-Florin-Cernat/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Mordovya-a-evitat-infrangerea-in-ultimul-moment/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Lokomotiv-Moscow-a-incheiat-la-egalitate-1-1-meciul-de-astazi-cu-Dinamo-Moscow/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Gabriel-Iancu-i-a-adus-lui-Steaua-Bucuresti-victoria-in-fata-celor-de-la-Botosani/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Incredibil-Anzhi-Makhachkala-pierde-pentru-a-3-oara-la-rand/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Un-succes-meritata-pentru-Pandurii-CSMS-Iasi-pleaca-acasa-fara-puncte/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Nici-o-sansa-Zenit-St-Petersburg-a-obtinut-a-4-victorie-la-rand/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Victorie-la-limita-pentru-Amkar-Krylya-Sovetov-Samara-pleaca-acasa-fara-puncte/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Nimeni-n-a-fost-mai-bun-astazi-in-partida-Concordia-Chiajna-2-2-Petrolul-Ploiesti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Kuban-Krasnodar-si-FC-Ufa-au-plecat-acasa-fara-a-stabili-un-invingator/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Au-pierdut-la-o-diferenta-de-2-goluri-CFR-Cluj-2-0-FC-Voluntari/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/La-limita-ACS-Poli-Timisoara-1-0-Botosani/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/O-victorie-meritata-pentru-Lokomotiv-Moscow-Anzhi-Makhachkala-pleaca-acasa-fara-puncte/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Victorie-pe-final-de-meci-pentru-CSMS-Iasi-in-fata-celor-de-la-Petrolul-Ploiesti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Spartak-Moscow-cu-greu-a-evitat-remiza-in-meciul-cu-FC-Krasnodar/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Astra-Giurgiu-i-a-invins-cu-emotii-pe-cei-de-la-CS-Universitatea-Craiova/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/N-a-fost-ziua-lor-Rubin-Kazan-au-cedat-cu-0-2-in-partida-cu-Amkar/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Au-pierdut-la-o-diferenta-de-3-goluri-Ural-1-4-Zenit-St-Petersburg/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Cate-un-punct-au-luat-astazi-Steaua-Bucuresti-si-CFR-Cluj/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Cu-un-scor-de-1-la-1-au-plecat-acasa-astazi-Terek-Grozny-si-Kuban-Krasnodar/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/Cu-un-scor-de-1-la-1-au-incheiat-astazi-FC-Viitorul-Constanta-si-Dinamo-Bucuresti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Remiza-pe-ultima-suta-de-metri-datorata-lui-Mitchell-Donald/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Victorie-in-ultimele-minute-ale-meciului-pentru-FK-Rostov-in-duelul-contra-FC-Ufa/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/La-limita-Tirgu-Mures-1-0-Concordia-Chiajna/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/O-reusita-meritata-pentru-CSKA-Moscow-Krylya-Sovetov-Samara-pleaca-acasa-fara-puncte/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/FC-Voluntari-si-Pandurii-au-plecat-acasa-fara-a-stabili-un-invingator/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
     
         <url>
             <loc>http://www.fotbal.md/Romania-Liga1/Cate-un-punct-au-luat-astazi-Botosani-si-FC-Viitorul-Constanta/</loc>

@@ -4,6 +4,10 @@
 {% block meta %}
     <meta name="description" content="{{ news_item.game }}. {{ news_item.text|striptags|truncatewords:20 }}">
     <meta name="keywords" content="fotbal, highlights, rezumat, {{ news_item.game.campionat.title }}, {{ news_item.game.team1 }}, {{ news_item.game.team2 }}, {{ news_item.game }}">
+    <meta content="article" property="og:type">
+    <meta content="http://www.fotbal.md{{ news_item.photo.image.url }}" property="og:image">
+    <meta content="Fotbal.MD" property="og:site_name">
+    <meta content="Fotbal.MD | {{ news_item }}" property="og:title">
 {% endblock %}
 {% block slider %}
             <!-- PAGE TITLE -->
