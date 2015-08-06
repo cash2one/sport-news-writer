@@ -127,10 +127,15 @@ def news(request, campionat=None, title=None):
         (reverse('campionat', kwargs={'campionat': news_item.game.campionat.slug}), news_item.game.campionat.title),
         (None, news_item.title)
     ])
+    other_news_list = News.objects.filter(
+        Q(game__campionat=news_item.game.campionat) &
+        Q(game__pub_date=news_item.game.pub_date) &
+        Q(pub_date__lt=news_item.pub_date)
+    ).order_by('-id')
     return render(request, 'news.html',
                   {'news_item': news_item, 'campionat_list': campionat_list,
                    'clasament_list': clasament_list, 'hero': hero,
-                   'crumbs': crumbs})
+                   'crumbs': crumbs, 'other_news_list': other_news_list})
 
 
 def teams(request, campionat=None):
