@@ -14,9 +14,10 @@ import urllib
 from django.core.files import File
 from time import sleep
 from slugify import slugify
+from os import environ
 
 
-DEVELOPER_KEY = "AIzaSyB0KMU3GZcwr5D-UqN46ZhlnjQLyNQwi20"
+DEVELOPER_KEY = environ.get('SPW_GOOGLE_DEVELOPER_KEY')
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 

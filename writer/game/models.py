@@ -16,6 +16,7 @@ import writer.collect
 import datetime
 from django.template.loader import get_template
 from writer.promo import get_api
+from django.contrib.sitemaps import ping_google
 
 # Create your models here.
 
@@ -72,6 +73,7 @@ def sitemap():
     cont = template.render(Context(locals()))
     f.write(cont)
     f.close()
+    ping_google('/sitemap.xml')
     return
 
 

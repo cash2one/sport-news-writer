@@ -3,7 +3,7 @@
     <url>
         <loc>http://www.fotbal.md/</loc>
         <priority>0.9</priority>
-        <lastmod>2015-08-02</lastmod>
+        <lastmod>2015-08-04</lastmod>
         <changefreq>hourly</changefreq>
     </url>
     
@@ -704,6 +704,18 @@
         	<priority>0.4</priority>
         </url>
     
+    
+        <url>
+            <loc>http://www.fotbal.md/Romania-Liga1/ACS-Poli-Timisoara-au-cedat-un-singur-gol-in-meciul-cu-Dinamo-Bucuresti/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Situatia-de-la-Rubin-Kazan-devine-alarmanta-deja-3-infrangeri-consecutive/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
     
         <url>
             <loc>http://www.fotbal.md/Romania-Liga1/Nimeni-n-a-fost-mai-bun-astazi-in-partida-Tirgu-Mures-0-0-CS-Universitatea-Craiova/</loc>
