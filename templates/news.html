@@ -69,6 +69,14 @@
                             </ul>
                         {% endif %}
                     </article>
+                    {% if other_news_list %}
+                        <h3>In alte meciuri ale zilei:</h3>
+                        {% for other_news in other_news_list %}
+                            <p>
+                                <a href="{% url 'news' other_news.game.campionat.slug other_news.slug %}">{{ other_news }}</a>
+                            </p>
+                        {% endfor %}
+                    {% endif %}
                     {% load disqus_tags %}
                     {% disqus_show_comments %}
                     <hr/>
