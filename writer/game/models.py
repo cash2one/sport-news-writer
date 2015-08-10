@@ -22,6 +22,17 @@ from django.contrib.sitemaps import ping_google
 
 default_used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
 
+
+def select_slug(title):
+    slug = slugify(title)
+    initial_slug = slugify(title)
+    count = 0
+    while News.objects.filter(slug=slug).count():
+        count += 1
+        slug = '%s-%d' % (initial_slug, count)
+    return slug
+
+
 def mk_sent(what, verb, when, who, how):
     return "%s %s %s %s %s" % (what, verb, when, who, how)
 
@@ -1204,7 +1215,8 @@ class Game(models.Model):
             if not news:
                 image = self.select_image()
                 if image:
-                    news = News(title=title, text=news_text, photo=image, pub_date=datetime.datetime.now(), game=self, slug=slugify(title))
+                    slug = select_slug(title)
+                    news = News(title=title, text=news_text, photo=image, pub_date=datetime.datetime.now(), game=self, slug=slug)
                     news.save()
                     sitemap()
             else:
