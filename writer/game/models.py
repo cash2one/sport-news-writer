@@ -17,6 +17,7 @@ import datetime
 from django.template.loader import get_template
 from writer.promo import get_api
 from django.contrib.sitemaps import ping_google
+import operator
 
 # Create your models here.
 
@@ -381,6 +382,25 @@ class Team(models.Model):
                 break
         return lose
 
+    def goals_diff(self, last_id=None):
+        args = Q(team1=self)
+        args |= Q(team2=self)
+        if not last_id:
+            last_id = Game.objects.first().id
+        ref_game = Game.objects.get(id=last_id)
+        season = ref_game.season
+        args &= Q(season=season)
+        args &= Q(id__lte=last_id)
+        (goals_in, goals_out) = (0, 0)
+        for game in Game.objects.filter(args).order_by('id'):
+            if game.team1 == self:
+                goals_out += game.goal_team1
+                goals_in += game.goal_team2
+            else:
+                goals_in += game.goal_team1
+                goals_out += game.goal_team2
+        return goals_out - goals_in
+
     def points(self, last_id=None):
         args = Q(team1=self)
         args |= Q(team2=self)
@@ -718,14 +738,9 @@ class Game(models.Model):
         clasament = self.clasament()
         res = []
         for row in clasament:
-            (points, team_id) = row
+            (points, team_id, goals_diff) = row
             team = Team.objects.get(id=team_id)
-            count = 0
-            wins = 0
-            loses = 0
-            equals = 0
-            goals_in = 0
-            goals_out = 0
+            (count, wins, loses, equals, goals_in, goals_out) = [0]*6
             for game in Game.objects.filter(
                 Q(season=self.season) &
                 Q(pub_date__lte=self.pub_date) & Q(id__lte=self.id) &
@@ -764,8 +779,9 @@ class Game(models.Model):
             clasament = []
             for team in self.campionat.team_set.filter(seasons=self.season).all():
                 points = team.points(self.id)
-                clasament.append([points, team.id])
-            clasament.sort()
+                diff = team.goals_diff(self.id)
+                clasament.append([points, team.id, diff])
+            clasament.sort(key = operator.itemgetter(0, 2))
             clasament.reverse()
             self.classament = str(clasament)
             self.save()
