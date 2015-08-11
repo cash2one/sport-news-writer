@@ -3,7 +3,7 @@
     <url>
         <loc>http://www.fotbal.md/</loc>
         <priority>0.9</priority>
-        <lastmod>2015-08-10</lastmod>
+        <lastmod>2015-08-11</lastmod>
         <changefreq>hourly</changefreq>
     </url>
     
@@ -722,6 +722,36 @@
         	<priority>0.4</priority>
         </url>
     
+        <url>
+            <loc>http://www.fotbal.md/Italia-Serie-A/echipe/Carpi/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.4</priority>
+        </url>
+    
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Fenomenal-Krylya-Sovetov-Samara-pierde-pentru-a-3-oara-la-rand/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Deja-a-7-victorie-consecutiva-pentru-Manchester-City/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Remiza-pe-ultima-suta-de-metri-datorata-lui-Fedor-Smolov/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
+    
+        <url>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Incredibil-Rubin-Kazan-nu-si-poate-reveni-a-pierdut-al-4-meci-consecutiv/</loc>
+        	<changefreq>hourly</changefreq>
+        	<priority>0.8</priority>
+        </url>
     
         <url>
             <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Au-pierdut-la-o-diferenta-de-2-goluri-Arsenal-0-2-West-Ham-United/</loc>
@@ -766,13 +796,13 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/E-de-neoprit-Zenit-St-Petersburg-isi-continua-seria-de-victorii/</loc>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/E-de-neoprit-Zenit-St-Petersburg-isi-continua-seria-de-victorii-2/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Nici-o-sansa-CSKA-Moscow-a-obtinut-a-4-victorie-la-rand/</loc>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Nici-o-sansa-CSKA-Moscow-a-obtinut-a-4-victorie-la-rand-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -916,7 +946,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Nici-o-sansa-Zenit-St-Petersburg-a-obtinut-a-4-victorie-la-rand/</loc>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Nici-o-sansa-Zenit-St-Petersburg-a-obtinut-a-4-victorie-la-rand-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -1294,7 +1324,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Italia-Serie-A/ChievoVerona-a-evitat-infrangerea-in-ultimul-moment/</loc>
+            <loc>http://www.fotbal.md/Italia-Serie-A/ChievoVerona-a-evitat-infrangerea-in-ultimul-moment-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -1342,7 +1372,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Italia-Serie-A/Udinese-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv/</loc>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Udinese-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -1618,7 +1648,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Spania-Primera-Division/Ii-paste-nenorocul-Cordoba-isi-continua-seria-de-infrangeri/</loc>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/Ii-paste-nenorocul-Cordoba-isi-continua-seria-de-infrangeri-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -1822,7 +1852,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Hull-City-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Hull-City-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -2050,7 +2080,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Spania-Primera-Division/Deportivo-La-Coruna-a-evitat-infrangerea-in-ultimul-moment/</loc>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/Deportivo-La-Coruna-a-evitat-infrangerea-in-ultimul-moment-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -2338,7 +2368,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Spania-Primera-Division/Deja-a-7-victorie-consecutiva-pentru-Real-Madrid/</loc>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/Deja-a-7-victorie-consecutiva-pentru-Real-Madrid-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -2518,7 +2548,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Spania-Primera-Division/Catastrofal-Getafe-pierde-pentru-a-3-oara-la-rand/</loc>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/Catastrofal-Getafe-pierde-pentru-a-3-oara-la-rand-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -2590,7 +2620,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Spania-Primera-Division/Eibar-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv/</loc>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/Eibar-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -2602,7 +2632,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Spania-Primera-Division/E-de-neoprit-Real-Madrid-isi-continua-seria-de-victorii/</loc>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/E-de-neoprit-Real-Madrid-isi-continua-seria-de-victorii-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -2716,7 +2746,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Germania-Bundesliga/Inca-o-victorie-la-activ-pentru-Bayern-Munich-Seria-continua/</loc>
+            <loc>http://www.fotbal.md/Germania-Bundesliga/Inca-o-victorie-la-activ-pentru-Bayern-Munich-Seria-continua-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -3244,7 +3274,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Ii-paste-nenorocul-West-Bromwich-Albion-isi-continua-seria-de-infrangeri/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Ii-paste-nenorocul-West-Bromwich-Albion-isi-continua-seria-de-infrangeri-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -3346,7 +3376,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Situatia-de-la-Hull-City-devine-alarmanta-deja-3-infrangeri-consecutive/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Situatia-de-la-Hull-City-devine-alarmanta-deja-3-infrangeri-consecutive-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -3382,7 +3412,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Dezastruos-FC-Ufa-nu-si-poate-reveni-a-pierdut-al-3-meci-consecutiv/</loc>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Dezastruos-FC-Ufa-nu-si-poate-reveni-a-pierdut-al-3-meci-consecutiv-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -4096,7 +4126,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/E-de-neoprit-Liverpool-isi-continua-seria-de-victorii/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/E-de-neoprit-Liverpool-isi-continua-seria-de-victorii-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -4192,7 +4222,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Spartak-Moscow-cu-greu-a-evitat-remiza-in-partida-cu-Dinamo-Moscow/</loc>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/Spartak-Moscow-cu-greu-a-evitat-remiza-in-partida-cu-Dinamo-Moscow-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -4552,7 +4582,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Situatia-de-la-Queens-Park-Rangers-devine-alarmanta-deja-3-infrangeri-consecutive/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Situatia-de-la-Queens-Park-Rangers-devine-alarmanta-deja-3-infrangeri-consecutive-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -5074,7 +5104,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Italia-Serie-A/Situatia-de-la-Atalanta-devine-alarmanta-deja-3-infrangeri-consecutive/</loc>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Situatia-de-la-Atalanta-devine-alarmanta-deja-3-infrangeri-consecutive-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -5650,7 +5680,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Spania-Primera-Division/E-de-neoprit-Barcelona-isi-continua-seria-de-victorii/</loc>
+            <loc>http://www.fotbal.md/Spania-Primera-Division/E-de-neoprit-Barcelona-isi-continua-seria-de-victorii-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -5698,7 +5728,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Aston-Villa-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Aston-Villa-isi-continua-parcursul-de-INSUCCES-al-3-meci-pierdut-consecutiv-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -5902,7 +5932,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Italia-Serie-A/Ii-paste-nenorocul-Parma-isi-continua-seria-de-infrangeri/</loc>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Ii-paste-nenorocul-Parma-isi-continua-seria-de-infrangeri-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -6112,7 +6142,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Un-succes-meritata-pentru-Manchester-United-Queens-Park-Rangers-pleaca-acasa-fara-puncte/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Un-succes-meritata-pentru-Manchester-United-Queens-Park-Rangers-pleaca-acasa-fara-puncte-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -7108,7 +7138,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Leicester-City-isi-continua-parcursul-de-INSUCCES-al-4-meci-pierdut-consecutiv/</loc>
+            <loc>http://www.fotbal.md/Anglia-Premier-Liga-engleza/Leicester-City-isi-continua-parcursul-de-INSUCCES-al-4-meci-pierdut-consecutiv-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -7258,7 +7288,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Italia-Serie-A/Situatia-de-la-Parma-devine-alarmanta-deja-4-infrangeri-consecutive/</loc>
+            <loc>http://www.fotbal.md/Italia-Serie-A/Situatia-de-la-Parma-devine-alarmanta-deja-4-infrangeri-consecutive-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>
@@ -10642,7 +10672,7 @@
         </url>
     
         <url>
-            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/E-de-neoprit-Zenit-St-Petersburg-isi-continua-seria-de-victorii/</loc>
+            <loc>http://www.fotbal.md/Rusia-Premier-Liga-rusa/E-de-neoprit-Zenit-St-Petersburg-isi-continua-seria-de-victorii-1/</loc>
         	<changefreq>hourly</changefreq>
         	<priority>0.8</priority>
         </url>

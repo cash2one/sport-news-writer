@@ -24,11 +24,21 @@ import operator
 default_used_frases = '{"title": None, "begin": None, "first": None, "group": [], "regular": [], "last": None, "conclusion": None}'
 
 
-def select_slug(title):
+def select_slug(klass, title):
+    """
+    Select a non-repetitive slug
+
+    :param klass: a class for witch we select the slug
+    :type klass: a python class
+    :param title: a title from we generate the slug
+    :type title: str
+    :returns: a non-repetitive slug
+    :rtype: str
+    """
     slug = slugify(title)
     initial_slug = slugify(title)
     count = 0
-    while News.objects.filter(slug=slug).count():
+    while klass.objects.filter(slug=slug).count():
         count += 1
         slug = '%s-%d' % (initial_slug, count)
     return slug
@@ -97,7 +107,6 @@ class Photo(models.Model):
         return self.title
 
 
-
 class Season(models.Model):
     """
     The model for season. For calculating corrent the current points and the top of teams, we need to work only with the games in current season.
@@ -107,7 +116,6 @@ class Season(models.Model):
 
     def __unicode__(self):
         return self.title
-
 
 
 class Campionat(models.Model):
@@ -127,8 +135,7 @@ class Campionat(models.Model):
         return self.country
 
     def clasament(self):
-        return self.game_set.first().render_clasament()
-
+        return self.game_set.filter(ft=True).first().render_clasament()
 
 
 class Player(models.Model):
@@ -157,7 +164,6 @@ class Player(models.Model):
         if self.photos.all():
             return random.sample(self.photos.all(), 1)[0]
         return None
-
 
 
 class Couch(models.Model):
@@ -466,7 +472,6 @@ class Team(models.Model):
         return upper, lower
 
 
-
 class Goal(models.Model):
     author = models.ForeignKey(Player, blank=True, null=True)
     assist = models.ForeignKey(Player, blank=True, null=True, related_name='assist_goal')
@@ -634,7 +639,6 @@ class Goal(models.Model):
         return random.sample(v, 1)[0]
 
 
-
 class Carton(models.Model):
     player = models.ForeignKey(Player)
     minute = models.IntegerField()
@@ -653,6 +657,7 @@ class Game(models.Model):
     goal_team1 = models.IntegerField(default=0)
     goal_team2 = models.IntegerField(default=0)
     pub_date = models.DateField(blank=True, null=True, db_index=True)
+    game_time = models.TimeField(blank=True, null=True)
     goals = models.ManyToManyField(Goal, blank=True, null=True)
     cartons = models.ManyToManyField(Carton, blank=True, null=True)
     url = models.CharField(max_length=512, blank=True, null=True)
@@ -663,6 +668,7 @@ class Game(models.Model):
     video = models.TextField(blank=True, null=True)
     live = models.TextField(blank=True, null=True)
     used_frases = models.TextField(default=default_used_frases)
+    ft = models.BooleanField(default=True)
 
     class Meta:
         index_together = [
@@ -1231,7 +1237,7 @@ class Game(models.Model):
             if not news:
                 image = self.select_image()
                 if image:
-                    slug = select_slug(title)
+                    slug = select_slug(News, title)
                     news = News(title=title, text=news_text, photo=image, pub_date=datetime.datetime.now(), game=self, slug=slug)
                     news.save()
                     sitemap()
@@ -1270,7 +1276,6 @@ class TitleFrase(models.Model):
             ret += self.title
         ret += '. Score diff: ' + str(self.min_score_diference) + ' - ' + str(self.max_score_diference) + '. Total: ' + str(self.min_total_goals) + ' - ' + str(self.max_total_goals)
         return ret
-
 
 
 class FirstGoalFrase(models.Model):
@@ -1316,7 +1321,6 @@ class RegularGoalFrase(models.Model):
             return ''
 
 
-
 class GoalGroupFrase(models.Model):
     """
     It's a model for groups of goals (the cases when the same team mark more then 1 goal consecutivly.
@@ -1338,7 +1342,6 @@ class GoalGroupFrase(models.Model):
 
     def __unicode__(self):
         return self.title
-
 
 
 class LastGoalFrase(models.Model):
@@ -1366,7 +1369,6 @@ class Conclusion(models.Model):
         return self.title
 
 
-
 class News(models.Model):
     title = models.CharField(max_length=512)
     slug = models.CharField(max_length=1024, blank=True, null=True, db_index=True)
@@ -1390,13 +1392,11 @@ class News(models.Model):
         graph.put_wall_post(message='', attachment=attachment)
 
 
-
-
-
 class Synonims(models.Model):
     title = models.CharField(max_length=128, db_index=True)
     syns = models.TextField()
     used = models.TextField(blank=True, null=True)
+
     def __unicode__(self):
         return self.title
 add_to_builtins('writer.game.templatetags.syns')

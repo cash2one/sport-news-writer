@@ -57,19 +57,25 @@ def update_game_date(row, campionat):
     :returns: True
     :rtype: bool
     """
+    print 'we try to update game pub_date'
     if 'row-tall' in row['class']:
-        date_struct = select(row, '.tright')
+        print 'yes, is our class'
+        date_struct = select(row, '.right')
+        print 'date_struct', date_struct, row
         if date_struct:
-            date_string = date_struct[0].text.strip()
-            print date_string
-            if len(date_string.split(' ')) == 2:
-                date_string += ', %d' % datetime.date.today().year
-            print date_string
-            pub_date = datetime.datetime.strptime(date_string, '%B %d, %Y')
-            print pub_date
-            game.models.Game.objects.filter(
-                Q(campionat=campionat) & Q(pub_date__isnull=True)
-            ).update(pub_date=pub_date)
+            try:
+                date_string = date_struct[0].text.strip()
+                print date_string
+                if len(date_string.split(' ')) == 2:
+                    date_string += ', %d' % datetime.date.today().year
+                print date_string
+                pub_date = datetime.datetime.strptime(date_string, '%B %d, %Y')
+                print pub_date
+                game.models.Game.objects.filter(
+                    Q(campionat=campionat) & Q(pub_date__isnull=True)
+                ).update(pub_date=pub_date)
+            except:
+                pass
     return
 
 
@@ -111,23 +117,48 @@ def create_game(row, campionat, load_date, score_link):
     :returns: a game
     :rtype: writer.game.models.Game
     """
-    if 'FT' in select(row, 'div.min')[0].text:
-        first_team = select(row, '.ply')[0].text
-        home_team = get_or_create_team(first_team, campionat)
-        second_team = select(row, '.ply')[1].text
-        away_team = get_or_create_team(second_team, campionat)
+    first_team = select(row, '.ply')[0].text
+    home_team = get_or_create_team(first_team, campionat)
+    second_team = select(row, '.ply')[1].text
+    away_team = get_or_create_team(second_team, campionat)
+    goal_team1, goal_team2 = (0, 0)
+    div_min = select(row, 'div.min')[0].text
+    if ':' in div_min:
+        hour = int(div_min.split(':')[0])
+        minute = int(div_min.split(':')[1])
+        game_time = datetime.time(hour=hour, minute=minute)
+        ft = False
+    elif 'FT' in div_min:
         score = select(row, '.sco')[0].text
         goal_team1 = split(' - ', score)[0]
         goal_team2 = split(' - ', score)[1]
-        g = game.models.Game(
-            campionat=campionat, team1=home_team,
-            team2=away_team, goal_team1=goal_team1,
-            goal_team2=goal_team2, pub_date=None, url=score_link
-        )
-        if not load_date:
-            g.pub_date = datetime.date.today()
-        g.save()
-        return g
+        ft = True
+        game_time = None
+    if ((':' in div_min) or ('FT' in div_min)):
+        g = game.models.Game.objects.filter(
+            team1=home_team, team2=away_team,
+            campionat=campionat, season=game.models.get_season()
+        ).first()
+        print 'game in this moment', g
+        if not g:
+            print 'this game does not exist, so we need to create it'
+            g = game.models.Game(
+                campionat=campionat, team1=home_team,
+                team2=away_team, goal_team1=goal_team1,
+                goal_team2=goal_team2, pub_date=None, url=score_link,
+                game_time=game_time, ft=ft
+            )
+            g.save()
+            if not load_date:
+                g.pub_date = datetime.date.today()
+            return g
+        elif not g.ft:
+            g.ft = ft
+            g.goal_team1 = goal_team1
+            g.goal_team2 = goal_team2
+            g.url = score_link
+            g.save()
+            return g
     return False
 
 
@@ -280,24 +311,23 @@ def collect(campionat, load_date=False):
             update_game_date(row, campionat)
         if 'row-gray' in row['class']:
             score_link = get_score_link(row)
-            if score_link:
-                g = create_game(row, campionat, load_date, score_link)
-                if g:
-                    score_soup = Soup(urllib2.urlopen(score_link))
-                    get_couches(score_soup, g)
-                    score_row_list = select(score_soup, 'div.row-gray')
-                    for score_row in score_row_list:
-                        if not create_goal(score_row, g):
-                            create_carton(score_row, g)
-                    print g.goal_team1, g.goal_team2
-                    news = g.news()
-                    news.post_to_facebook()
+            g = create_game(row, campionat, load_date, score_link)
+            if g and score_link:
+                score_soup = Soup(urllib2.urlopen(score_link))
+                get_couches(score_soup, g)
+                score_row_list = select(score_soup, 'div.row-gray')
+                for score_row in score_row_list:
+                    if not create_goal(score_row, g):
+                        create_carton(score_row, g)
+                print g.goal_team1, g.goal_team2
+                news = g.news()
+                news.post_to_facebook()
     return 'ok'
 
 
 def collect_all():
     for campionat in game.models.Campionat.objects.all():
-        collect(campionat)
+        collect(campionat, True)
     return 'ok'
 
 

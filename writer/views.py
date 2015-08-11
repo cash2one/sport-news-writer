@@ -61,8 +61,8 @@ def hero_of_the_day(day=datetime.date.today(), campionat=None):
 
 def base(request, campionat=None):
     crumbs = ''
-    news_args = Q()
-    games_args = Q()
+    news_args = Q(pub_date__lte=datetime.datetime.now())
+    games_args = Q(ft=True)
     campionat_item = None
     if campionat:
         campionat_item = get_object_or_404(Campionat, slug=campionat)
@@ -124,7 +124,9 @@ def news(request, campionat=None, title=None):
         pass
     hero = news_item.game.hero()
     crumbs = create_breadcrumbs([
-        (reverse('campionat', kwargs={'campionat': news_item.game.campionat.slug}), news_item.game.campionat.title),
+        (reverse('campionat',
+                 kwargs={'campionat': news_item.game.campionat.slug}
+                 ), news_item.game.campionat.title),
         (None, news_item.title)
     ])
     other_news_list = News.objects.filter(
@@ -149,8 +151,7 @@ def teams(request, campionat=None):
     campionat_list = Campionat.objects.all()
     return render(request, 'teams.html', {'team_list': team_list,
                                           'clasament_list': clasament_list,
-                                          'campionat_list': campionat_list,})
-
+                                          'campionat_list': campionat_list})
 
 
 def team(request, campionat=None, team=None):
@@ -163,20 +164,25 @@ def team(request, campionat=None, team=None):
     player_list = list(set(list(Player.objects.filter(
         Q(goal__team=team) & Q(goal__auto=False)).all())))
     game_list = Game.objects.filter(
-        Q(team1=team) | Q(team2=team)
+        Q(ft=True) &
+        (Q(team1=team) | Q(team2=team))
     ).order_by('-pub_date')
     crumbs = create_breadcrumbs([
-        (reverse('campionat', kwargs={'campionat': team.campionat.slug}), team.campionat.title),
+        (reverse('campionat',
+                 kwargs={'campionat': team.campionat.slug}
+                 ), team.campionat.title
+         ),
         (None, team.title)
     ])
     return render(request, 'team.html', {'team': team,
                                          'clasament_list': clasament_list,
                                          'player_list': player_list,
-                                         'game_list': game_list, 'crumbs': crumbs})
+                                         'game_list': game_list,
+                                         'crumbs': crumbs})
 
 
 def rss(request, campionat=None, team=None):
-    args = Q()
+    args = Q(pub_date__lte=datetime.datetime.now())
     if campionat:
         args &= Q(game__campionat__slug=campionat)
         if team:
@@ -185,5 +191,3 @@ def rss(request, campionat=None, team=None):
     template = get_template('rss.xml')
     return HttpResponse(template.render(Context(locals())),
                         content_type="application/rss+xml")
-
-
